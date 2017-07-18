@@ -7,26 +7,41 @@ use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
-
 class BrandController extends \yii\web\Controller
 {
     //列表
     public function actionIndex()
     {
-        //总条数
-        $total=Brand::find()->count();
-        //每页显示条数
-        $perPage=4;
+        $query=Brand::find()->where(['!=','status','-1']);
         //分页工具
         $pager= new Pagination(
             [
-                'totalCount'=>$total,
-                'defaultPageSize'=>$perPage
+                //总条数
+                'totalCount'=>$query->count(),
+                //每页显示条数
+                'defaultPageSize'=>3
             ]
         );
-        $models = Brand::find()->limit($pager->limit)->offset($pager->offset)->all();
+        $models = $query->limit($pager->limit)->offset($pager->offset)->all();
         //分配数据
         return $this->render('index',['models'=>$models,'pager'=>$pager]);
+    }
+    //回收站
+    public function actionRecycle()
+    {
+        $query=Brand::find()->where(['=','status','-1']);
+        //分页工具
+        $pager= new Pagination(
+            [
+                //总条数
+                'totalCount'=>$query->count(),
+                //每页显示条数
+                'defaultPageSize'=>3
+            ]
+        );
+        $models = $query->limit($pager->limit)->offset($pager->offset)->all();
+        //分配数据
+        return $this->render('recycle',['models'=>$models,'pager'=>$pager]);
     }
     //添加
     public function actionAdd(){
@@ -111,8 +126,19 @@ class BrandController extends \yii\web\Controller
     //删除
     public function actionDelete($id)
     {
-        Brand::findOne($id)->delete();
+        $model=Brand::findOne($id);
+        $model->updateall(['status'=>-1],['id'=>$id]);
+        $model->save();
         \Yii::$app->session->setFlash('success','数据删除成功！');
         return $this->redirect(array('brand/index'));
     }
+    //回收站还原
+    public function actionReduction($id)
+    {
+        $model=Brand::findOne($id);
+        $model->updateall(['status'=>1],['id'=>$id]);
+        $model->save();
+        \Yii::$app->session->setFlash('success','数据还原成功！');
+        return $this->redirect(array('brand/recycle'));
     }
+}

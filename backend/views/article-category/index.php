@@ -1,13 +1,13 @@
 <?php
-$this->title='品牌列表';
+$this->title='文章分类列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
     <div class="col-lg-5 navbar-left">
-        <?=\yii\bootstrap\Html::a('添加',['brand/add'],['class'=>'btn btn-sm btn-primary'])?>
+        <?=\yii\bootstrap\Html::a('添加',['article-category/add'],['class'=>'btn btn-sm btn-primary'])?>
     </div>
     <div class="col-lg-3 navbar-right">
-        <?=\yii\bootstrap\Html::a('回收站',['brand/recycle'],['class'=>'btn btn-sm btn-warning'])?>
+        <?=\yii\bootstrap\Html::a('回收站',['article-category/recycle'],['class'=>'btn btn-sm btn-warning'])?>
     </div>
 </div>
 <table class="table  <!--table-bordered--> table-condensed list-table">
@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <td>ID</td>
         <td>名称</td>
         <td>简介</td>
-        <td>LOGO图片</td>
         <td>排序</td>
         <td>状态</td>
         <td>操作</td>
@@ -28,13 +27,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <td><?=$model->id ?></td>
             <td><?=$model->name ?></td>
             <td><?=$model->intro ?></td>
-            <td><?=\yii\bootstrap\Html::img($model->logo?$model->logo:'/upload/brand/default.jpg',['height'=>40]) ?></td>
             <td><?=$model->sort ?></td>
-            <td><?=\backend\models\Brand::getStatusOptions()[$model->status] ?></td>
+            <td><?=\backend\models\ArticleCategory::getStatusOptions()[$model->status] ?></td>
             <td>
-                <?=\yii\bootstrap\Html::a('编辑',['brand/edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning'])?>
+                <?=\yii\bootstrap\Html::a('编辑',['article-category/edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning'])?>
 
-                <?=\yii\bootstrap\Html::a('删除',['brand/delete','id'=>$model->id],['class'=>'btn btn-sm btn-danger'])?>
+                <?=\yii\bootstrap\Html::a('删除',['article-category/delete','id'=>$model->id],['class'=>'btn btn-sm btn-danger'])?>
             </td>
         </tr>
     <?php endforeach; ?>

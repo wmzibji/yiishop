@@ -1,9 +1,6 @@
 <?php
 
 namespace backend\models;
-
-
-
 /**
  * This is the model class for table "brand".
  *
@@ -14,9 +11,8 @@ namespace backend\models;
  * @property integer $sort
  * @property integer $status
  */
-class Brand extends \yii\db\ActiveRecord
+class ArticleCategory extends \yii\db\ActiveRecord
 {
-    public $imgFile;//保存文件上传对象
     public $code;//验证码
     public static function getStatusOptions($del_options=true){
         $status_options=[
@@ -34,7 +30,7 @@ class Brand extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'brand';
+        return 'article_category';
     }
 
     /**
@@ -46,7 +42,6 @@ class Brand extends \yii\db\ActiveRecord
             [['intro'], 'string'],
             [['sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['logo'], 'string', 'max' => 255],
         ];
     }
 
@@ -59,7 +54,6 @@ class Brand extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '名称',
             'intro' => '简介',
-            'logo' => 'LOGO图片',
             'sort' => '排序',
             'status' => '状态',
         ];

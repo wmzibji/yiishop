@@ -34,10 +34,8 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => '品牌列表', 'url' => ['/brand/index']],
-       /* ['label' => '商品列表', 'url' => ['/goods/index']],
-        ['label' => '添加商品', 'url' => ['/goods/add']],
-        ['label' => '管理员列表', 'url' => ['/admin/index']],
-        ['label' => '添加管理员', 'url' => ['/admin/add']],*/
+        ['label' => '文章分类列表', 'url' => ['/article-category/index']],
+
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '注册', 'url' => ['/site/signup']];
