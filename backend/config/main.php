@@ -8,6 +8,12 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    //设置语言
+    'language'=>'zh-CN',
+    //修改默认路由
+    //'defaultRoute'=>'user/index',
+    //修改默认布局文件
+    //'layout'=>false,
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -37,14 +43,23 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
-        'urlManager' => [
+
+       /* 'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
+        ],*/
+        'urlManager'=>[
+            'class' => 'yii\web\UrlManager',	//指定实现类
+            'enablePrettyUrl' => true,	// 开启URL美化
+            'showScriptName' => false, // 是否显示index.php
+            // 'suffix' => '.html',	// 伪静态后缀
+            'rules'=>[
+                // 自定义路由规则
+            ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

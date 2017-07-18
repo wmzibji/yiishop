@@ -1,10 +1,13 @@
 <?php
 
+/* @var $this \yii\web\View */
+/* @var $content string */
+
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
-use frontend\assets\AppAsset;
 use common\widgets\Alert;
 
 AppAsset::register($this);
@@ -22,31 +25,25 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => '商城后台管理中心',
+        'brandLabel' => 'My Company',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     $menuItems = [
-        ['label' => '品牌列表', 'url' => ['/brand/index']],
-       /* ['label' => '商品列表', 'url' => ['/goods/index']],
-        ['label' => '添加商品', 'url' => ['/goods/add']],
-        ['label' => '管理员列表', 'url' => ['/admin/index']],
-        ['label' => '添加管理员', 'url' => ['/admin/add']],*/
+        ['label' => 'Home', 'url' => ['/site/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => '注册', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => '登陆', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                '退出登陆 (' . Yii::$app->user->identity->username . ')',
+                'Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
@@ -70,7 +67,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; PHP学习 <?= date('Y') ?></p>
+        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
