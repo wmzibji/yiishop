@@ -1,18 +1,17 @@
 <?php
+
 namespace backend\controllers;
-use yii\web\Controller;
-use backend\models\ArticleCategory;
+use backend\models\Article;
+use backend\models\ArticleDetail;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
-use yii\web\Request;
-use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
-class ArticleCategoryController extends Controller
+class ArticleController extends \yii\web\Controller
 {
     //列表
     public function actionIndex()
     {
-        $query=ArticleCategory::find()->where(['!=','status','-1']);
+        $query=Article::find()->where(['!=','status','-1']);
         //分页工具
         $pager= new Pagination(
             [
@@ -29,7 +28,7 @@ class ArticleCategoryController extends Controller
     //回收站
     public function actionRecycle()
     {
-        $query=ArticleCategory::find()->where(['=','status','-1']);
+        $query=Article::find()->where(['=','status','-1']);
         //分页工具
         $pager= new Pagination(
             [
@@ -44,28 +43,33 @@ class ArticleCategoryController extends Controller
         return $this->render('recycle',['models'=>$models,'pager'=>$pager]);
     }
     //添加
-    public function actionAdd(){
-        //实例化表单模型
-        $model = new ArticleCategory();
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+    public function actionAdd()
+    {
+        $model = new Article();
+        $model1 = new ArticleDetail();
+        if($model->load(\Yii::$app->request->post()) && $model->validate() &&$model1->load(\Yii::$app->request->post()) && $model1->validate()){
+            $model->create_time=time();
             $model->save();
-            \Yii::$app->session->setFlash('success','文章分类添加成功');
-            return $this->redirect(['article-category/index']);
+            $model1->save();
+            \Yii::$app->session->setFlash('success','文章添加成功');
+            return $this->redirect(['article/index']);
         }
-        return $this->render('add',['model'=>$model]);
+        return $this->render('add',['model'=>$model,'model1'=>$model1]);
     }
     //编辑
     public function actionEdit($id){
-        $model = ArticleCategory::findOne(['id'=>$id]);
-        if($model==null){//如果不存在，则显示404页面
-            throw new NotFoundHttpException('分类不存在');
+        $model = Article::findOne(['id'=>$id]);
+        $model1 = ArticleDetail::findOne(['article_id'=>$id]);
+        if($model==null){//如果品牌不存在，则显示404页面
+            throw new NotFoundHttpException('文章不存在');
         }
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
+        if($model->load(\Yii::$app->request->post()) && $model->validate() && $model1->load(\Yii::$app->request->post()) && $model1->validate()){
             $model->save();
-            \Yii::$app->session->setFlash('success','文章分类修改成功');
-            return $this->redirect(['article-category/index']);
+            $model1->save();
+            \Yii::$app->session->setFlash('success','文章修改成功');
+            return $this->redirect(['article/index']);
         }
-        return $this->render('add',['model'=>$model]);
+        return $this->render('add',['model'=>$model,'model1'=>$model1]);
     }
     //验证码
     public function actions(){
@@ -80,22 +84,20 @@ class ArticleCategoryController extends Controller
     //删除
     public function actionDelete($id)
     {
-        $model=ArticleCategory::findOne(['id'=>$id]);
-        //逻辑删除，只修改状态，不真实删除数据
-        if($model){
-            $model->status = -1;
-            $model->save();
-        }
+        $model=Article::findOne($id);
+        $model->updateall(['status'=>-1],['id'=>$id]);
+        $model->save();
         \Yii::$app->session->setFlash('success','数据删除成功！');
-        return $this->redirect(array('article-category/index'));
+        return $this->redirect(array('article/index'));
     }
     //回收站还原
     public function actionReduction($id)
     {
-        $model=ArticleCategory::findOne(['id'=>$id]);
-        $model->status=1;
+        $model=Article::findOne($id);
+        $model->updateall(['status'=>1],['id'=>$id]);
         $model->save();
         \Yii::$app->session->setFlash('success','数据还原成功！');
-        return $this->redirect(array('article-category/recycle'));
+        return $this->redirect(array('article/recycle'));
     }
+
 }

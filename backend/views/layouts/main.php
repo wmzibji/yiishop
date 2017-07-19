@@ -33,9 +33,18 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => '品牌列表', 'url' => ['/brand/index']],
-        ['label' => '文章分类列表', 'url' => ['/article-category/index']],
-
+        ['label' => '品牌管理' ,'items'=>[
+            ['label'=>'品牌列表','url'=>['brand/index']],
+            ['label'=>'添加品牌','url'=>['brand/add']],
+            ['label'=>'品牌回收站','url'=>['brand/recycle']]
+        ]],
+        ['label'=>'文章管理','items'=>[
+            ['label'=>'分类列表','url'=>['article-category/index']],
+            ['label'=>'添加分类','url'=>['article-category/add']],
+            ['label'=>'分类回收站','url'=>['article-category/recycle']],
+            ['label'=>'文章列表','url'=>['article/index']],
+            ['label'=>'添加文章','url'=>['article/add']],
+        ]]
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '注册', 'url' => ['/site/signup']];
