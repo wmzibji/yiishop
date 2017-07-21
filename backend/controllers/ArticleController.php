@@ -9,9 +9,10 @@ use yii\web\NotFoundHttpException;
 class ArticleController extends \yii\web\Controller
 {
     //列表
-    public function actionIndex()
+    public function actionIndex($keywords='')
     {
         $query=Article::find()->where(['!=','status','-1']);
+        $query=Article::find()->where(['and','status in (1,0)',"name like '%{$keywords}%'"])->orderBy('sort desc,id desc');
         //分页工具
         $pager= new Pagination(
             [
@@ -60,7 +61,7 @@ class ArticleController extends \yii\web\Controller
     public function actionEdit($id){
         $model = Article::findOne(['id'=>$id]);
         $model1 = ArticleDetail::findOne(['article_id'=>$id]);
-        if($model==null){//如果品牌不存在，则显示404页面
+        if($model==null){//如果不存在，则显示404页面
             throw new NotFoundHttpException('文章不存在');
         }
         if($model->load(\Yii::$app->request->post()) && $model->validate() && $model1->load(\Yii::$app->request->post()) && $model1->validate()){

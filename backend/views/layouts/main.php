@@ -38,6 +38,10 @@ AppAsset::register($this);
             ['label'=>'添加品牌','url'=>['brand/add']],
             ['label'=>'品牌回收站','url'=>['brand/recycle']]
         ]],
+        ['label' => '商品分类管理' ,'items'=>[
+            ['label'=>'商品分类列表','url'=>['goods-category/index']],
+            ['label'=>'添加商品分类','url'=>['goods-category/add']]
+        ]],
         ['label'=>'文章管理','items'=>[
             ['label'=>'分类列表','url'=>['article-category/index']],
             ['label'=>'添加分类','url'=>['article-category/add']],

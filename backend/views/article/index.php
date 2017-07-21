@@ -2,10 +2,16 @@
 $this->title='文章';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="container-fluid">
+<div class="container-fluid" style="background: Lightgrey">
     <div class="row">
-        <div class="col-xs-10 col-md-9 navbar-left">
+        <div class="col-xs-2 col-md-3 navbar-left">
             <?=\yii\bootstrap\Html::a('添加',['article/add'],['class'=>'btn btn-sm btn-primary'])?>
+        </div>
+        <div class="col-xs-8 col-md-6 navbar-left">
+            <form class="row" style="height: 30px">
+                <input type="text" name="keywords" width="100px" class="col-lg-5" style="height: 30px">
+                <input type="submit" value="搜索" class="btn btn-success" style="height: 30px">
+            </form>
         </div>
         <div class="col-xs-2 col-md-2 navbar-right">
             <?=\yii\bootstrap\Html::a('回收站',['article/recycle'],['class'=>'btn btn-sm btn-warning'])?>

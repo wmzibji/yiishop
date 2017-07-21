@@ -1,5 +1,6 @@
 <?php
 $this->title='文章—回收站';
+$this->params['breadcrumbs'][] = ['label' => '文章列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?=\yii\bootstrap\Html::a('返回列表',['article/index'],['class'=>'btn btn-sm btn-primary'])?>

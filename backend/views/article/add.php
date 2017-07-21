@@ -1,5 +1,6 @@
 <?php
-$this->title='文章—添加';
+$this->title='添加文章';
+$this->params['breadcrumbs'][] = ['label' => '文章列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?=\yii\bootstrap\Html::a('返回列表',['article/index'],['class'=>'btn btn-sm btn-primary'])?>
