@@ -3,7 +3,7 @@ $this->title='添加文章分类';
 $this->params['breadcrumbs'][] = ['label' => '文章分类列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?=\yii\bootstrap\Html::a('返回列表',['article/index'],['class'=>'btn btn-sm btn-primary'])?>
+<?=\yii\bootstrap\Html::a('返回列表',['index'],['class'=>'btn btn-sm btn-primary'])?>
 <?php
 $form = \yii\bootstrap\ActiveForm::begin();//表单开始
 echo $form->field($model,'name');

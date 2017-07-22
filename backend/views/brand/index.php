@@ -3,17 +3,12 @@ $this->title='品牌列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-10 col-md-9 navbar-left">
-            <?=\yii\bootstrap\Html::a('添加',['brand/add'],['class'=>'btn btn-sm btn-primary'])?>
-        </div>
-        <div class="col-xs-2 col-md-2 navbar-right">
-            <?=\yii\bootstrap\Html::a('回收站',['brand/recycle'],['class'=>'btn btn-sm btn-warning'])?>
-        </div>
-        <div class="col-xs-6 col-md-1 navbar-right"></div>
-    </div>
-</div>
-<div class="table-responsive"> <!-- //表单列表-->
+    <h1><?= \yii\bootstrap\Html::encode($this->title) ?></h1>
+    <p>
+        <?=\yii\bootstrap\Html::a('添加',['add'],['class'=>'btn btn-sm btn-primary'])?>
+        <?=\yii\bootstrap\Html::a('回收站',['recycle'],['class'=>'btn btn-sm btn-warning'])?>
+    </p>
+    <div class="table-responsive"> <!-- //表单列表-->
     <table class="table table-hover <!--table-bordered--> <!--table-condensed--> list-table  text-center ">
         <thead class="text-info">
         <tr class="success">
@@ -44,6 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php endforeach; ?>
         </tbody>
 </table>
+</div>
 </div>
 <div  class="pull-right"><!--//分页工具条-->
     <?php

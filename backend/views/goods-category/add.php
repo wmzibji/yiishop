@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 var zNodes = {$nodes};
           
                 zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-                zTreeObj.expandAll(true);//展开全部节点
+                // zTreeObj.expandAll(true);//展开全部节点
                 
                 //获取节点
                 var node = zTreeObj.getNodeByParam("id", "{$nodeId}", null);

@@ -1,9 +1,8 @@
 <?php
-$this->title='文章—回收站';
+$this->title='回收站';
 $this->params['breadcrumbs'][] = ['label' => '文章列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?=\yii\bootstrap\Html::a('返回列表',['article/index'],['class'=>'btn btn-sm btn-primary'])?>
 <div class="table-responsive"> <!-- //表单列表-->
     <table class="table table-hover <!--table-bordered--> <!--table-condensed--> list-table  text-center ">
         <thead class="text-info">
@@ -27,9 +26,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=date('Y-m-d H:i:s',$model->create_time) ?></td>
                 <td><?=\backend\models\article::getStatusOptions()[$model->status] ?></td>
                 <td>
-                    <?=\yii\bootstrap\Html::a('编辑',['article/edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning'])?>
+                    <?=\yii\bootstrap\Html::a('编辑',['edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning'])?>
 
-                    <?=\yii\bootstrap\Html::a('还原',['article/reduction','id'=>$model->id],['class'=>'btn btn-sm btn-danger'])?>
+                    <?=\yii\bootstrap\Html::a('还原',['reduction','id'=>$model->id],['class'=>'btn btn-sm btn-danger'])?>
                 </td>
             </tr>
         <?php endforeach; ?>

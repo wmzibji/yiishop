@@ -6,7 +6,7 @@ use yii\grid\GridView;
 $this->title = '商品分类';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="">
+<div class="container-fluid">
     <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('添加', ['add'], ['class' => 'btn btn-success']) ?>
@@ -24,12 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <tbody class="text-success">
             <?php foreach($models as $model): ?>
                 <tr>
-                    <td><?=$model->id ?></td>
-                    <td><?=$model->name ?></td>
-                    <td><?=$model->intro ?></td>
+                    <td><?=$model['id' ]?></td>
+                    <td class="text-left"><?=str_repeat('——',$model['depth']).$model['name'] ?></td>
+                    <td><?=$model['intro'] ?></td>
                     <td>
-                        <?=Html::a('',['edit','id'=>$model->id,'name'=>$model->name,'parent_id'=>$model->parent_id],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
-                        <?=Html::a('',['delete','id'=>$model->id],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',],])?>
+                        <?=Html::a('',['edit','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
+                        <?=Html::a('',['delete','id'=>$model['id' ]],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </table>
     </div>
 </div>
-<div  class="pull-right"><!--//分页工具条-->
+<!--<div  class="pull-right"><!--//分页工具条-->
     <?php
-    echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'尾页']);?>
-</div>
+/*    echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'尾页']);*/?>
+</div>-->

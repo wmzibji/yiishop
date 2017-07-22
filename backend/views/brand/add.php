@@ -3,7 +3,7 @@ $this->title='添加品牌';
 $this->params['breadcrumbs'][] = ['label' => '品牌列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?=\yii\bootstrap\Html::a('返回列表',['brand/index'],['class'=>'btn btn-sm btn-primary'])?>
+<?=\yii\bootstrap\Html::a('返回列表',['index'],['class'=>'btn btn-sm btn-primary'])?>
 <?php
 use yii\web\JsExpression;
 $form = \yii\bootstrap\ActiveForm::begin(['class'=>'form-horizontal']);//表单开始

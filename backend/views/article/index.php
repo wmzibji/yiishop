@@ -1,24 +1,20 @@
 <?php
-$this->title='文章';
+$this->title='文章列表';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="container-fluid" style="background: Lightgrey">
-    <div class="row">
-        <div class="col-xs-2 col-md-3 navbar-left">
-            <?=\yii\bootstrap\Html::a('添加',['article/add'],['class'=>'btn btn-sm btn-primary'])?>
-        </div>
-        <div class="col-xs-8 col-md-6 navbar-left">
-            <form class="row" style="height: 30px">
-                <input type="text" name="keywords" width="100px" class="col-lg-5" style="height: 30px">
-                <input type="submit" value="搜索" class="btn btn-success" style="height: 30px">
-            </form>
-        </div>
-        <div class="col-xs-2 col-md-2 navbar-right">
-            <?=\yii\bootstrap\Html::a('回收站',['article/recycle'],['class'=>'btn btn-sm btn-warning'])?>
-        </div>
-        <div class="col-xs-6 col-md-1 navbar-right"></div>
+<div class="">
+    <h1><?= \yii\bootstrap\Html::encode($this->title) ?></h1>
+    <p>
+        <?=\yii\bootstrap\Html::a('添加',['add'],['class'=>'btn btn-sm btn-primary'])?>
+
+        <?=\yii\bootstrap\Html::a('回收站',['recycle'],['class'=>'btn btn-sm btn-warning'])?>
+    </p>
+    <div>
+        <form class="" style="height: 30px">
+            <input type="text" name="keywords" width="100px" class="col-lg-5" style="height: 30px">
+            <input type="submit" value="搜索" class="btn btn-success" style="height: 30px">
+        </form>
     </div>
-</div>
 <div class="table-responsive"> <!-- //表单列表-->
     <table class="table table-hover <!--table-bordered--> <!--table-condensed--> list-table  text-center ">
         <thead class="text-info">
@@ -44,14 +40,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=date('Y-m-d H:i:s',$model->create_time) ?></td>
                 <td><?=\backend\models\article::getStatusOptions()[$model->status] ?></td>
                 <td>
-                    <?=\yii\bootstrap\Html::a('',['article/edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
+                    <?=\yii\bootstrap\Html::a('',['edit','id'=>($model->id)],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
 
-                    <?=\yii\bootstrap\Html::a('',['article/delete','id'=>$model->id],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash'])?>
+                    <?=\yii\bootstrap\Html::a('',['delete','id'=>$model->id],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
                 </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
-</table>
+    </table>
 </div>
 <div  class="pull-right"><!--//分页工具条-->
     <?php

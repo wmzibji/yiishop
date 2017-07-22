@@ -22,7 +22,7 @@ class BrandController extends \yii\web\Controller
                 //总条数
                 'totalCount'=>$query->count(),
                 //每页显示条数
-                'defaultPageSize'=>3
+                'defaultPageSize'=>8
             ]
         );
         $models = $query->limit($pager->limit)->offset($pager->offset)->all();
@@ -39,7 +39,7 @@ class BrandController extends \yii\web\Controller
                 //总条数
                 'totalCount'=>$query->count(),
                 //每页显示条数
-                'defaultPageSize'=>3
+                'defaultPageSize'=>8
             ]
         );
         $models = $query->limit($pager->limit)->offset($pager->offset)->all();
@@ -87,7 +87,7 @@ class BrandController extends \yii\web\Controller
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $model->save();
             \Yii::$app->session->setFlash('success','品牌添加成功');
-            return $this->redirect(['brand/index']);
+            return $this->redirect(['index']);
         }
         return $this->render('add',['model'=>$model]);
     }
@@ -133,8 +133,8 @@ class BrandController extends \yii\web\Controller
         }
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
             $model->save();
-            \Yii::$app->session->setFlash('success','品牌添加成功');
-            return $this->redirect(['brand/index']);
+            \Yii::$app->session->setFlash('success','品牌修改成功');
+            return $this->redirect(['index']);
         }
         return $this->render('add',['model'=>$model]);
     }
@@ -155,7 +155,7 @@ class BrandController extends \yii\web\Controller
         $model->updateall(['status'=>-1],['id'=>$id]);
         $model->save();
         \Yii::$app->session->setFlash('success','数据删除成功！');
-        return $this->redirect(array('brand/index'));
+        return $this->redirect(array('index'));
     }
     //回收站还原
     public function actionReduction($id)
@@ -164,7 +164,7 @@ class BrandController extends \yii\web\Controller
         $model->updateall(['status'=>1],['id'=>$id]);
         $model->save();
         \Yii::$app->session->setFlash('success','数据还原成功！');
-        return $this->redirect(array('brand/recycle'));
+        return $this->redirect(array('recycle'));
     }
     //验证码  ajax上传
     public function actions() {

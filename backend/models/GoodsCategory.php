@@ -4,6 +4,7 @@ namespace backend\models;
 
 use creocoder\nestedsets\NestedSetsBehavior;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "goods_category".
@@ -19,6 +20,16 @@ use Yii;
  */
 class GoodsCategory extends \yii\db\ActiveRecord
 {
+    //建立和商品表的关系
+    public function getGoods()
+    {
+        return $this->hasMany(Goods::className(),['goods_category_id'=>'id']);
+    }
+    //获取商品分类选项
+    public static function getGoodsOptions()
+    {
+        return ArrayHelper::map(GoodsCategory::find()->all(),'id','name');
+    }
     /**
      * @inheritdoc
      */
@@ -78,5 +89,22 @@ class GoodsCategory extends \yii\db\ActiveRecord
     public static function find()
     {
         return new GoodsCategoryQuery(get_called_class());
+    }
+
+    public static function getZtreeNodes()
+    {
+        $nodes =  self::find()->select(['id','parent_id','name'])->asArray()->all();
+        $nodes[] = ['id'=>0,'parent_id'=>0,'name'=>'顶级分类','open'=>1];
+        return $nodes;
+    }
+
+    //异常提示信息
+    public static function exceptionInfo($msg)
+    {
+        $infos = [
+            'Can not move a node when the target node is same.'=>'不能修改到自己节点下面',
+            'Can not move a node when the target node is child.'=>'不能修改到自己的子孙节点下面',
+        ];
+        return isset($infos[$msg])?$infos[$msg]:$msg;
     }
 }
