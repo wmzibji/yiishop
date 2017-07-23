@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "goods".
@@ -39,10 +40,19 @@ class Goods extends \yii\db\ActiveRecord
     {
         return $this->hasOne(GoodsIntro::className(),['goods_id'=>'id']);
     }
-    //建立和 goods_gallery 商品图片表的关系    1对1
+    //建立和 goods_gallery 商品图片表的关系
     public function getGoodsGallery()
     {
-        return $this->hasOne(GoodsGallery::className(),['goods_id'=>'id']);
+        return $this->hasMany(GoodsGallery::className(),['goods_id'=>'id']);
+    }
+    //获取图片轮播数据
+    public function getPics()
+    {
+        $images = [];
+        foreach ($this->goodsGallery as $img){
+            $images[] = Html::img($img->path);
+        }
+        return $images;
     }
     //状态
     public static $status_options=[0=>'回收站',1=>'正常'];

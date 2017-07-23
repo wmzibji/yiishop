@@ -11,9 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => '商品列表', 'url' => ['index']]
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="goods-view">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('修改', ['edit', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('删除', ['delete', 'id' => $model->id], [
@@ -24,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -44,5 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'view_times:datetime',
         ],
     ]) ?>
-
+    <h4>商品图库：</h4>
+    <?=\yii\bootstrap\Carousel::widget([
+        'items' => $model->getPics()
+    ]);?>
+    <h4>商品描述：</h4>
+    <div class="container">
+        <?=$model->goodsIntro->content?>
+    </div>
 </div>

@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use backend\models\GoodsSearchForm;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use Yii;
@@ -35,14 +36,14 @@ class GoodsController extends Controller
             ],
         ];
     }
-
-    /**
-     * Lists all Goods models.
-     * @return mixed
-     */
+    //列表
     public function actionIndex()
     {
-        $query=Goods::find()->where(['!=','status','0']);
+        //搜索
+        $model = new GoodsSearchForm();
+        $query = Goods::find()->where(['!=','status','0']);
+        //接收表单提交的查询参数
+        $model->search($query);
         //分页工具
         $pager= new Pagination(
             [
@@ -54,9 +55,29 @@ class GoodsController extends Controller
         );
         $models = $query->limit($pager->limit)->offset($pager->offset)->all();
         //分配数据
-        return $this->render('index',['models'=>$models,'pager'=>$pager]);
+        return $this->render('index',['models'=>$models,'pager'=>$pager,'model'=>$model]);
     }
-
+    //回收站
+    public function actionRecycle()
+    {
+        //搜索
+        $model = new GoodsSearchForm();
+        $query = Goods::find()->where(['=','status','0']);
+        //接收表单提交的查询参数
+        $model->search($query);
+        //分页工具
+        $pager= new Pagination(
+            [
+                //总条数
+                'totalCount'=>$query->count(),
+                //每页显示条数
+                'defaultPageSize'=>8
+            ]
+        );
+        $models = $query->limit($pager->limit)->offset($pager->offset)->all();
+        //分配数据
+        return $this->render('recycle',['models'=>$models,'pager'=>$pager,'model'=>$model]);
+    }
     /**
      * Displays a single Goods model.
      * @param integer $id
@@ -68,68 +89,98 @@ class GoodsController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
-
-    /**
-     * Creates a new Goods model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+    //添加
     public function actionAdd()
     {
         $model = new Goods();
-        $model1 = new GoodsIntro();
-//        $model2 = new GoodsGallery();
-//        $model3 = new GoodsDayCount();
+        $model1 = new GoodsIntro();//文章详情
         if(     $model->load(\Yii::$app->request->post()) && $model->validate()
             &&  $model1->load(\Yii::$app->request->post()) && $model1->validate()
-//            &&  $model2->load(\Yii::$app->request->post()) && $model2->validate()
-//            &&  $model3->load(\Yii::$app->request->post()) && $model3->validate()
         ){
-            $model->create_time=time();
             $model1->goods_id=($model->id);
-//            $model2->goods_id=$model->id;
+            //sn货号
+            $day=date('Y-m-d',time());
+            $DayCount=GoodsDayCount::findOne(['day'=>$day]);
+            if($DayCount==null) {
+                $DayCount = new GoodsDayCount();//货号
+                $DayCount->day=$day;
+                $DayCount->count=0;
+                $DayCount->save();
+            }/*else{
+                $count=$query['count']+1;
+//                $model3->updateall(['count'=>$count],['day'=>$day]);
+                $model3->update(['count'=>$count]);
+                $model->sn=date('Ymd',time()).'000'.$count;
+            }*/
+            $model->create_time=time();
+            $model->sn=date('Ymd',time()).sprintf("%04d",$DayCount->count+1);
             $model->save();
             $model1->save();
-//            $model2->save();
-//            $model3->save();
+            $DayCount->count++;
+            $DayCount->save();
             \Yii::$app->session->setFlash('success','添加成功');
             return $this->redirect(['index']);
         }
-        return $this->render('add',['model'=>$model,'model1'=>$model1/*,'model2'=>$model2,'model3'=>$model3*/]);
+        return $this->render('add',['model'=>$model,'model1'=>$model1]);
     }
 
-    /**
-     * Updates an existing Goods model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
+    //编辑
     public function actionEdit($id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('edit', [
-                'model' => $model,
-            ]);
+        $model = Goods::findOne(['id'=>$id]);
+//        $model1 = $model->goodsIntro;
+        $model1 = GoodsIntro::findOne(['goods_id'=>$id]);
+        if(     $model->load(\Yii::$app->request->post()) && $model->validate()
+            &&  $model1->load(\Yii::$app->request->post()) && $model1->validate()
+        ){
+            $model->save();
+            $model1->save();
+            \Yii::$app->session->setFlash('success','修改成功');
+            return $this->redirect(['index']);
         }
+        return $this->render('edit',['model'=>$model,'model1'=>$model1]);
     }
 
-    /**
-     * Deletes an existing Goods model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
+    //删除
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model=Goods::findOne(['id'=>$id]);
+        $model->updateall(['status'=>0],['id'=>$id]);
+        $model->save();
+        \Yii::$app->session->setFlash('success','数据删除成功！');
+        return $this->redirect(array('index'));
     }
+    //回收站还原
+    public function actionReduction($id)
+    {
+        $model=Goods::findOne($id);
+        $model->updateall(['status'=>1],['id'=>$id]);
+        $model->save();
+        \Yii::$app->session->setFlash('success','数据还原成功！');
+        return $this->redirect(array('recycle'));
+    }
+    //图片
+    public function actionGallery($id)
+    {
+        $goods = Goods::findOne(['id'=>$id]);
+        if($goods == null){
+            throw new NotFoundHttpException('商品不存在');
+        }
 
+
+        return $this->render('gallery',['goods'=>$goods]);
+
+    }
+    public function actionDelGallery(){
+        $id = \Yii::$app->request->post('id');
+        $model = GoodsGallery::findOne(['id'=>$id]);
+        if($model && $model->delete()){
+            return 'success';
+        }else{
+            return 'fail';
+        }
+
+    }
     /**
      * Finds the Goods model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

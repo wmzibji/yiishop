@@ -17,6 +17,20 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('添加', ['add'], ['class' => 'btn btn-sm btn-success']) ?>
         <?= Html::a('回收站',['recycle'],['class'=>'btn btn-sm btn-warning'])?>
     </p>
+    <?php $form = \yii\bootstrap\ActiveForm::begin([
+        'method' => 'get',
+        //get方式提交,需要显式指定action
+        'action'=>\yii\helpers\Url::to(['index']),
+        'layout'=>'inline'
+    ]);
+    echo $form->field($model,'sn')->textInput(['placeholder'=>'货号'])->label(false);
+    echo $form->field($model,'name')->textInput(['placeholder'=>'商品名'])->label(false);
+    /*echo $form->field($model,'brand_id')->textInput(['placeholder'=>'品牌'])->label(false);
+    echo $form->field($model,'goods_category_id')->textInput(['placeholder'=>'分类'])->label(false);*/
+    echo $form->field($model,'minPrice')->textInput(['placeholder'=>'￥'])->label(false);
+    echo $form->field($model,'maxPrice')->textInput(['placeholder'=>'￥'])->label('-');
+    echo \yii\bootstrap\Html::submitButton('<span class="glyphicon glyphicon-search"></span>搜索',['class'=>'btn btn-default']);
+    \yii\bootstrap\ActiveForm::end();?>
     <div class="table-responsive"> <!-- //表单列表-->
         <table class="table table-hover list-table  text-center ">
             <thead class="text-info">
@@ -46,10 +60,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=\backend\models\Goods::$sale_options[$model->is_on_sale] ?></td>
                     <td><img src="<?=$model['logo'] ?>" alt="" height="40"></td>
                     <td>
-                        <?=Html::a('',['view','id'=>$model['id' ]],['class'=>'btn btn-sm btn-info glyphicon glyphicon-eye-open'])?>
-
-                        <?=Html::a('',['edit','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
-                        <?=Html::a('',['delete','id'=>$model['id' ]],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
+                        <?=Html::a('<span class="glyphicon glyphicon-eye-open"></span>查看',['view','id'=>$model['id' ]],['class'=>'btn btn-sm btn-success'])?>
+                        <?=\yii\bootstrap\Html::a('<span class="glyphicon glyphicon-picture"></span>相册',['gallery','id'=>$model->id],['class'=>'btn btn-sm btn-info'])?>
+                        <?=Html::a('<span class="glyphicon glyphicon-edit"></span>编辑',['edit','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning'])?>
+                        <?=Html::a('<span class=" glyphicon glyphicon-trash"></span>删除',['delete','id'=>$model['id' ]],['class'=>'btn btn-sm btn-danger','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
                     </td>
                 </tr>
             <?php endforeach; ?>

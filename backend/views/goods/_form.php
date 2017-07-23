@@ -73,7 +73,7 @@ echo \yii\bootstrap\Html::img($model->logo?$model->logo:false,['id'=>'img','heig
     echo '<div>
                 <ul id="treeDemo" class="ztree"></ul>
             </div>';
-    echo $form->field($model, 'brand_id')->dropDownList(\backend\models\Brand::getBrandOptions()) ;
+    echo $form->field($model, 'brand_id')->dropDownList(\backend\models\Brand::getBrandOptions(),['prompt'=>'-选择品牌-']) ;
     echo $form->field($model, 'market_price')->textInput(['maxlength' => true]) ;
     echo $form->field($model, 'shop_price')->textInput(['maxlength' => true]) ;
     echo $form->field($model, 'stock')->textInput() ;

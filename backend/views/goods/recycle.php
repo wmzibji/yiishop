@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?=Html::a('',['view','id'=>$model['id' ]],['class'=>'btn btn-sm btn-info glyphicon glyphicon-eye-open'])?>
 
                         <?=Html::a('',['edit','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning glyphicon glyphicon-edit'])?>
-                        <?=Html::a('',['recycle','id'=>$model['id' ]],['class'=>'btn btn-sm btn-danger glyphicon glyphicon-trash'])?>
+                        <?=Html::a('还原 ',['reduction','id'=>$model['id' ]],['class'=>'btn btn-sm btn-success'])?>
                     </td>
                 </tr>
             <?php endforeach; ?>
