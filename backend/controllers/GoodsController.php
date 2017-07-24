@@ -200,6 +200,14 @@ class GoodsController extends Controller
     //验证码  ajax上传
     public function actions() {
         return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => "http://admin.yii2shop.com",//图片访问路径前缀
+                    "imagePathFormat" => "/upload/{yyyy}{mm}{dd}/{time}{rand:6}" ,//上传保存路径
+                    "imageRoot" => \Yii::getAlias("@webroot"),
+                ],
+            ],
             //图片上传
             's-upload' => [
                 'class' => UploadAction::className(),
@@ -236,7 +244,18 @@ class GoodsController extends Controller
                 'afterValidate' => function (UploadAction $action) {},
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
-                    $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
+                    $goods_id = \Yii::$app->request->post('goods_id');
+                    if($goods_id){
+                        $model = new GoodsGallery();
+                        $model->goods_id = $goods_id;
+                        $model->path = $action->getWebUrl();
+                        $model->save();
+                        $action->output['fileUrl'] = $model->path;
+                        $action->output['id'] = $model->id;
+                    }else{
+                        $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
+                    }
+//                    $action->output['fileUrl'] = $action->getWebUrl();//输出文件的相对路径
 //                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
 //                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
 //                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
