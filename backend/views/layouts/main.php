@@ -53,16 +53,30 @@ AppAsset::register($this);
             ['label'=>'分类回收站','url'=>['article-category/recycle']],
             ['label'=>'文章列表','url'=>['article/index']],
             ['label'=>'添加文章','url'=>['article/add']],
+        ]],
+        ['label'=>'RBAC','items'=>[
+            ['label'=>'权限列表','url'=>['rbac/permission-index']],
+            ['label'=>'添加权限','url'=>['rbac/add-permission']],
+            ['label'=>'角色列表','url'=>['rbac/role-index']],
+            ['label'=>'添加角色','url'=>['rbac/add-role']],
         ]]
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => '注册', 'url' => ['user/signup']];
         $menuItems[] = ['label' => '登陆', 'url' => ['user/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['user/logout'], 'post')
             . Html::submitButton(
                 '退出登陆 (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+//        $menuItems[] = ['label' => '修改密码', 'url' => ['user/changepw']];
+        $menuItems[] =  '<li>'
+            . Html::beginForm(['user/changepw'], 'post')
+            . Html::submitButton(
+                '修改密码',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()

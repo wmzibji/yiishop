@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a('<span class=" glyphicon glyphicon-trash"></span> 删除',['delete','id'=>$model['id' ]],['class'=>'btn btn-sm btn-danger','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]]);
                     },
                     'update' => function($url, $model, $key){
-                        return Html::a('<span class="glyphicon glyphicon-edit"></span> 编辑',['update','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning']);
+                        return Html::a('<span class="glyphicon glyphicon-edit"></span> 编辑',['edit','id'=>$model['id' ]],['class'=>'btn btn-sm btn-warning']);
                     },
                 ],
             ],

@@ -1,5 +1,6 @@
 <?php
 namespace backend\controllers;
+use backend\models\Changepw;
 use Yii;
 use backend\models\User;
 use backend\models\UserSearch;
@@ -8,14 +9,12 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\filters\AccessControl;
-use backend\models\LoginForm;
-use backend\models\SignupForm;
 class UserController extends Controller
 {
     /**
      * @inheritdoc
      */
-    public function behaviors()
+/*    public function behaviors()
     {
         return [
 //            'access' => [
@@ -37,41 +36,42 @@ class UserController extends Controller
                 'actions' => [
                     'logout' => ['post'],
                     'delete' => ['POST'],
+//                    'changepw' => ['POST'],
                 ],
             ],
         ];
-    }
+    }*/
     /**
      * @inheritdoc
      */
-    public function actions()
+/*    public function actions()
     {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
         ];
-    }
+    }*/
     //登录
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+        $model = new User(['scenario'=>User::SCENARIO_LOGIN]);//指定当前场景
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            if($model->login()){
+                \Yii::$app->session->setFlash('success','登陆成功！');
+                return $this->redirect(['index']);
+            }
         }
+        return $this->render('login', ['model' => $model]);
     }
     //退出
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->goHome();
+        return $this->redirect(['login']);
     }
     //列表
     public function actionIndex()
@@ -83,54 +83,32 @@ class UserController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    //详情
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
     //添加
-    public function actionCreate()
+    public function actionAdd()
     {
-        $model = new User();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model = new User(['scenario'=>User::SCENARIO_ADD]);//指定当前场景为添加场景
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save();
             \Yii::$app->session->setFlash('success','添加成功');
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->render('add', ['model' => $model]);
         }
-    }
-    //注册
-    public function actionSignup()
-    {
-        $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goBack();
-                }
-            }
-        }
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
     }
     //修改
-    public function actionUpdate($id)
+    public function actionEdit($id)
     {
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->setPassword($model->password_hash);
-            $model->generateAuthKey();
+//        if($model==null){
+//            throw new NotFoundHttpException('该用户不存在');
+//        }
+        $model->scenario = User::SCENARIO_EDIT;//指定当期场景为修改场景
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             $model->save();
             \Yii::$app->session->setFlash('success','修改成功');
             return $this->redirect(['index']);
-        } else {
-            return $this->render('update', ['model' => $model,]);
         }
+        return $this->render('edit', ['model' => $model]);
     }
 
     //删除
@@ -139,10 +117,14 @@ class UserController extends Controller
     /*    $this->findModel($id)->delete();
         return $this->redirect(['index']);*/
         $model=$this->findModel($id);
-        $model->updateall(['status'=>0],['id'=>$id]);
-        $model->save();
-        \Yii::$app->session->setFlash('success','数据删除成功！');
-        return $this->redirect(array('index'));
+        if($model->status==0){
+            throw new NotFoundHttpException('该账户已在回收站.');
+        }else{
+            $model->updateall(['status'=>0],['id'=>$id]);
+            $model->save();
+            \Yii::$app->session->setFlash('success','数据删除成功！');
+            return $this->redirect(array('index'));
+        }
     }
 
     protected function findModel($id)
@@ -152,5 +134,15 @@ class UserController extends Controller
         } else {
             throw new NotFoundHttpException('请求的页面不存在.');
         }
+    }
+    public function actionChangepw()
+    {
+        $model=new Changepw();
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            //
+            \Yii::$app->session->setFlash('success','密码修改成功');
+            return $this->redirect(['index']);
+        }
+        return $this->render('changepw', ['model' => $model,]);
     }
 }
