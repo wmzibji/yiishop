@@ -22,8 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=$model->name ?></td>
                     <td><?=$model->description ?></td>
                     <td>
-                        <?=\yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span> 编辑',['edit-permission','id'=>($model->name)],['class'=>'btn btn-sm btn-warning '])?>
-                        <?=\yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span> 删除',['delete-permission','id'=>$model->name],['class'=>'btn btn-sm btn-danger ','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
+                        <?=\yii\bootstrap\Html::a('<span class="glyphicon glyphicon-edit"></span> 编辑',['edit-permission','name'=>($model->name)],['class'=>'btn btn-sm btn-warning '])?>
+                        <?=\yii\bootstrap\Html::a('<span class="glyphicon glyphicon-trash"></span> 删除',['delete-permission','name'=>$model->name],['class'=>'btn btn-sm btn-danger ','data' => ['confirm' => '你确定要删除她么?', 'method' => 'post',]])?>
                     </td>
                 </tr>
             <?php endforeach; ?>

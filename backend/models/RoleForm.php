@@ -22,7 +22,7 @@ class RoleForm extends Model{
         return [
             'name'=>'名称',
             'description'=>'描述',
-            'permission'=>'权限',
+            'permissions'=>'权限',
         ] ;
     }
     public function validateName(){

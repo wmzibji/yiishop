@@ -96,17 +96,34 @@ class RbacController extends \yii\web\Controller
     }
     //--修改角色----
     public function actionEditRole($name){
+        $authManager = \Yii::$app->authManager;
+        $role = $authManager->getRole($name);
         $model=new RoleForm();
             //------取消角色和权限的关联--------
-        $authManager=\Yii::$app->authManager;
-        $role=$authManager->getRole($name);
-        //---获取角色权限-------
+//        $authManager=\Yii::$app->authManager;
+//        $role=$authManager->getRole($name);
+        //---获取角色权限-----回显--
         $permission=$authManager->getPermissionsByRole($name);
         //---名称----
         $model->name=$role->name;
         //----描述----
         $model->description=$role->description;
-        $model->permission=ArrayHelper::map($permission,'name','name');
+        $model->permissions=ArrayHelper::map($permission,'name','name');
+        if($model->load(\Yii::$app->request->post()) && $model->validate()) {
+            $role->description = $model->description;
+            $role->name = $model->name;
+            $authManager->update($name, $role);
+            //--------给角色赋予权限---------
+            $authManager->removeChildren($role);
+            if (is_array($model->permissions)) {
+                foreach ($model->permissions as $permissionName) {
+                    $permission = $authManager->getPermission($permissionName);
+                    if ($permission) $authManager->addChild($role, $permission);
+                }
+            }
+            \Yii::$app->session->setFlash('success', '角色修改成功！');
+            return $this->redirect(['role-index']);
+        }
         return $this->render('add-role',['model'=>$model]);
     }
     //-----角色列表--------

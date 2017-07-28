@@ -7,7 +7,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $form = \yii\bootstrap\ActiveForm::begin();//表单开始
 echo $form->field($model,'name')->textInput(/*['readonly'=>$model->scenario!=\backend\models\RoleForm::SCENARIO_ADD]*/);
 echo $form->field($model,'description');
-echo $form->field($model,'permission')->checkboxList(\yii\helpers\ArrayHelper::map(Yii::$app->authManager->getPermissions(),'name','description'));
+echo $form->field($model,'permissions',['inline'=>true])->checkboxList(\yii\helpers\ArrayHelper::map(Yii::$app->authManager->getPermissions(),'name','description'));
 echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-success']);
 \yii\bootstrap\ActiveForm::end();//表单结束
 
