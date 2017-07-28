@@ -4,6 +4,7 @@ use backend\models\Changepw;
 use Yii;
 use backend\models\User;
 use backend\models\UserSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -103,6 +104,8 @@ class UserController extends Controller
 //            throw new NotFoundHttpException('该用户不存在');
 //        }
         $model->scenario = User::SCENARIO_EDIT;//指定当期场景为修改场景
+        //------------设置权限----------
+        $model->roles = ArrayHelper::map(\Yii::$app->authManager->getRolesByUser($id),'name','description');
         if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             $model->save();
             \Yii::$app->session->setFlash('success','修改成功');

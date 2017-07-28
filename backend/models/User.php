@@ -3,12 +3,14 @@ namespace backend\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     public $password;//明文密码
     public $rememberMe;
+    public $roles=[];
     //定义场景常量
     const SCENARIO_ADD = 'add';
     const SCENARIO_LOGIN = 'login';
@@ -45,7 +47,29 @@ class User extends ActiveRecord implements IdentityInterface
             //验证邮箱格式
             ['email','email','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
             ['rememberMe','boolean','on'=>self::SCENARIO_LOGIN],
+            ['roles','safe'],
         ];
+    }
+    //------------获取当前用户的菜单-------------
+    public function getMenus()
+    {
+        $menuItems = [];
+        $menus = Menu::findAll(['parent_id'=>0]);
+        foreach ($menus as $menu){
+            $item = ['label'=>$menu->label,'items'=>[]];
+            foreach ($menu->children as $child){
+                //根据用户权限判断，该菜单是否显示
+                if(Yii::$app->user->can($child->url)){
+                    $item['items'][] = ['label'=>$child->label,'url'=>[$child->url]];
+                }
+            }
+            //如果该一级菜单没有子菜单，就不显示
+            if(!empty($item['items'])){
+                $menuItems[] = $item;
+            }
+
+        }
+        return $menuItems;
     }
     //找到身份----------
     public static function findIdentity($id)
@@ -103,6 +127,21 @@ class User extends ActiveRecord implements IdentityInterface
             $this->password_hash=\Yii::$app->security->generatePasswordHash($this->password);
         }
         return parent::beforeSave($insert);
+    }
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        if(in_array($this->scenario,[self::SCENARIO_ADD,self::SCENARIO_EDIT])){
+            $authManager = Yii::$app->authManager;
+            $authManager->revokeAll($this->id);
+            if(is_array($this->roles)){
+                foreach ($this->roles as $roleName){
+                    $role = $authManager->getRole($roleName);
+                    if($role) $authManager->assign($role,$this->id);
+                }
+            }
+        }
+
     }
     public function login()
     {

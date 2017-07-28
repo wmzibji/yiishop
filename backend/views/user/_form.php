@@ -13,6 +13,8 @@ use yii\widgets\ActiveForm;
     if(!$model->isNewRecord){
        echo $form->field($model, 'status')->radioList(\backend\models\User::$status_options);
     }?>
+    <?= $form->field($model,'roles')->checkboxList(
+    \yii\helpers\ArrayHelper::map(Yii::$app->authManager->getRoles(),'name','description'));?>
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '添加' : '编辑', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `menu`.
  */
-class m170726_065226_create_menu_table extends Migration
+class m170728_144413_create_menu_table extends Migration
 {
     /**
      * @inheritdoc

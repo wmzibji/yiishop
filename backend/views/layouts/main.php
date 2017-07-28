@@ -32,7 +32,7 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
+    /*$menuItems = [
         ['label' => '用户管理' ,'items'=>[
             ['label'=>'用户列表','url'=>['user/index']],
         ]],
@@ -59,8 +59,29 @@ AppAsset::register($this);
             ['label'=>'添加权限','url'=>['rbac/add-permission']],
             ['label'=>'角色列表','url'=>['rbac/role-index']],
             ['label'=>'添加角色','url'=>['rbac/add-role']],
+        ]],
+        ['label'=>'菜单管理','items'=>[
+            ['label'=>'菜单列表','url'=>['menu/index']],
+            ['label'=>'添加菜单','url'=>['menu/add']],
         ]]
-    ];
+    ];*/
+    $menuItems = [];
+    $menus=\backend\models\Menu::findAll(['parent_id'=>0]);
+    foreach ($menus as $menu){
+            //-------一级菜单----------
+        $items = [];
+        foreach ($menu->children as $child){
+            //----------判断用户是否有该路由权限-----
+            if(Yii::$app->user->can($child->url)){
+                $items[] = ['label' => $child->label, 'url' => [$child->url]];
+            }
+        }
+        //---------没有子菜单，不显示一级菜单-----------
+        if(!empty($items)){
+            $menuItems[] = ['label' => $menu->label, 'items' => $items];
+        }
+
+    }
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登陆', 'url' => ['user/login']];
     } else {
