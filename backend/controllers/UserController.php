@@ -15,31 +15,18 @@ class UserController extends Controller
     /**
      * @inheritdoc
      */
-/*    public function behaviors()
+/*   public function behaviors()
     {
         return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-//                    [
-//                        'actions' => ['login', 'error'],
-//                        'allow' => true,
-//                    ],
-//                    [
-//                        'actions' => ['logout', 'index'],
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//                    ],
-//                ],
-//            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                    'delete' => ['POST'],
-//                    'changepw' => ['POST'],
-                ],
-            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ]
+                ]
+            ]
         ];
     }*/
     /**
@@ -63,7 +50,8 @@ class UserController extends Controller
         if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             if($model->login()){
                 \Yii::$app->session->setFlash('success','登陆成功！');
-                return $this->redirect(['index']);
+//                return $this->redirect(['index']);
+                return $this->goHome();
             }
         }
         return $this->render('login', ['model' => $model]);

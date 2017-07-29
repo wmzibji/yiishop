@@ -8,7 +8,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?=\yii\bootstrap\Html::a('添加',['add-permission'],['class'=>'btn btn-sm btn-primary'])?>
     </p>
     <div class="table-responsive"> <!-- //表单列表-->
-        <table class="table table-hover <!--table-bordered--> <!--table-condensed--> list-table  text-center ">
+        <table class="table table-hover <!--table-bordered--> <!--table-condensed--> list-table  text-center" >
             <thead class="text-info">
             <tr class="success">
                 <td>名称</td>
@@ -30,5 +30,37 @@ $this->params['breadcrumbs'][] = $this->title;
             </tbody>
         </table>
     </div>
-
 </div>
+<?php
+$this->registerCssFile('@web/DataTables-1.10.15/media/css/jquery.dataTables.css');
+$this->registerJsFile('@web/DataTables-1.10.15/media/js/jquery.js',['depends'=>\yii\web\JqueryAsset::className()]);
+$this->registerJsFile('@web/DataTables-1.10.15/media/js/jquery.dataTables.js',['depends'=>\yii\web\JqueryAsset::className()]);
+/*$this->registerJs('
+    $(document).ready( function () {
+    $(".table").DataTable(
+    language: {
+        url: "//cdn.datatables.net/plug-ins/1.10.15/i18n/Chinese.json"
+    }
+    );
+} );
+')*/
+$this->registerJs('$(".table").DataTable({
+language: {
+        url: "//cdn.datatables.net/plug-ins/1.10.15/i18n/Chinese.json"
+    }
+});');
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

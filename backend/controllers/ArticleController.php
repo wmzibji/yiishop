@@ -6,8 +6,23 @@ use backend\models\ArticleDetail;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 class ArticleController extends \yii\web\Controller
 {
+/*    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ]
+                ]
+            ]
+        ];
+    }*/
     //列表
     public function actionIndex($keywords='')
     {

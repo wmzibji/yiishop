@@ -10,8 +10,23 @@ use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use flyok666\uploadifive\UploadAction;
 use flyok666\qiniu\Qiniu;
+use yii\filters\AccessControl;
 class BrandController extends \yii\web\Controller
 {
+/*    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ]
+                ]
+            ]
+        ];
+    }*/
     //列表
     public function actionIndex()
     {
