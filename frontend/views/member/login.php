@@ -61,13 +61,13 @@
 						</li>
 						<li class="checkcode">
 							<label for="">验证码：</label>
-							<input type="text"  name="checkcode" />
-							<img src="<?=Yii::getAlias('@web')?>/images/checkcode1.jpg" alt="" />
+							<input type="text"  name="code" />
+                            <img src="/site/captcha" alt="点击更换图片" id="img-code" />
 							<span>看不清？<a href="">换一张</a></span>
 						</li>
 						<li>
 							<label for="">&nbsp;</label>
-							<input type="checkbox" class="chb"  /> 保存登录信息
+							<input type="checkbox" class="chb" name="rememberMe" /> 保存登录信息
 						</li>
 						<li>
 							<label for="">&nbsp;</label>
@@ -128,6 +128,15 @@
 		</p>
 	</div>
 	<!-- 底部版权 end -->
-
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/jquery-1.8.3.min.js"></script>
+    <script>
+        //验证码
+        $("#img-code").click(function(){
+            $.getJSON('/site/captcha?refresh=1',function(json){
+                $("#img-code").attr('src',json.url);
+                //console.log(json.url);
+            });
+        });
+    </script>
 </body>
 </html>

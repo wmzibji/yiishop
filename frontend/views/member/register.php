@@ -48,42 +48,40 @@
 		</div>
 		<div class="login_bd">
 			<div class="login_form fl">
-                <?php $form = \yii\widgets\ActiveForm::begin(['id'=>'login-form']); ?>
+                <?php $form = \yii\widgets\ActiveForm::begin(['id'=>'login_form']); ?>
 					<ul>
-						<li>
+						<li id="li_username">
 							<label for="">用户名：</label>
-							<input type="text" class="txt" name="member[username]" />
-							<p>3-20位字符，可由中文、字母、数字和下划线组成</p>
+							<input type="text" class="txt" name="Member[username]" />
+							<p><!--3-20位字符，可由中文、字母、数字和下划线组成--></p>
 						</li>
-						<li>
+						<li id="li_password">
 							<label for="">密码：</label>
-							<input type="password" class="txt" name="<?=$model->password ?>" />
-							<p>6-20位字符，可使用字母、数字和符号的组合，不建议使用纯数字、纯字母、纯符号</p>
+							<input type="password" class="txt" name="Member[password]" />
+							<p><!--6-20位字符，可使用字母、数字和符号的组合，不建议使用纯数字、纯字母、纯符号--></p>
 						</li>
-						<li>
+						<li id="li_rePassword">
 							<label for="">确认密码：</label>
-							<input type="password" class="txt" name="<?=$model->password ?>" />
-							<p> <span>请再次输入密码</p>
+							<input type="password" class="txt" name="Member[rePassword]" />
+							<p><!-- <span>请再次输入密码--></p>
 						</li>
-						<li>
+						<li id="li_email">
 							<label for="">邮箱：</label>
-							<input type="text" class="txt" name="<?=$model->email ?>" />
-							<p>邮箱必须合法</p>
+							<input type="text" class="txt" name="Member[email]" />
+							<p></p>
 						</li>
-						<li>
+						<li id="li_tel">
 							<label for="">手机号码：</label>
-							<input type="text" class="txt" value="" name="<?=$model->tel ?>" id="tel" placeholder=""/>
+							<input type="text" class="txt" value="" name="Member[tel]" id="tel" placeholder=""/>
 						</li>
-						<li>
+						<li id="li_smsCode">
 							<label for="">验证码：</label>
-							<input type="text" class="txt" value="" placeholder="请输入短信验证码" name="captcha" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+							<input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
 							
 						</li>
-						<li class="checkcode">
-							<label for="">验证码：</label>
-							<input type="text"  name="checkcode" />
-							<img src="<?=Yii::getAlias('@web')?>/images/checkcode1.jpg" alt="" />
-							<span>看不清？<a href="">换一张</a></span>
+						<li id="li_code" class="checkcode">
+                            <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className())?>
+                            <p></p>
 						</li>
 						
 						<li>
@@ -92,10 +90,10 @@
 						</li>
 						<li>
 							<label for="">&nbsp;</label>
-							<input type="submit" value="" class="login_btn" />
+							<input type="button" value="" class="login_btn" />
 						</li>
 					</ul>
-                <?php $form = \yii\widgets\ActiveForm::end(); ?>
+                <?php \yii\widgets\ActiveForm::end(); ?>
 				
 			</div>
 			
@@ -156,7 +154,33 @@
 				
 				$('#get_captcha').val(html);
 			},1000);
-		}		
+		}
+            //--------使用AJAX提交表单-----------
+        $(".login_btn").click(function(){
+            $("#login_form p").text("");
+            $.post('/member/ajax-register',$("#login_form").serialize(),function(data){
+                var json = JSON.parse(data);
+                console.log(json);
+                if(json.status){
+                    alert('恭喜注册成功！');
+                    window.location.href="/member/login";
+                }else{
+                        //注册失败-----显示错误信息
+                    $(json.msg).each(function(i,errors){
+                        console.log(errors);
+                        $.each(errors,function(name,error){
+                            $("#li_"+name+" p").text(error.join(","));
+                        });
+                    });
+                }
+            });
+        });
+            //验证码
+        $("#member-code-image").click(function(){
+            $.getJSON('/site/captcha?refresh=1',function(json){
+                $("#member-code-image").attr('src',json.url);
+            });
+        });
 	</script>
 </body>
 </html>
