@@ -4,8 +4,9 @@ namespace backend\controllers;
 
 use backend\models\Menu;
 use yii\data\Pagination;
+use yii\web\Controller;
 
-class MenuController extends \yii\web\Controller
+class MenuController extends BaseController
 {
     //-----添加菜单--------
     public function actionAdd()

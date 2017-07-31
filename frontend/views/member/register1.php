@@ -167,26 +167,6 @@ JS
             $('#get_captcha').val(html);
         },1000);
     }
-    //--------使用AJAX提交表单-----------
-    $(".login_btn").click(function(){
-        $("#login_form p").text("");
-        $.post('/member/ajax-register',$("#login_form").serialize(),function(data){
-            var json = JSON.parse(data);
-            console.log(json);
-            if(json.status){
-                alert('恭喜注册成功！');
-                window.location.href="/member/login";
-            }else{
-                //注册失败-----显示错误信息
-                $(json.msg).each(function(i,errors){
-                    console.log(errors);
-                    $.each(errors,function(name,error){
-                        $("#li_"+name+" p").text(error.join(","));
-                    });
-                });
-            }
-        });
-    });
     //验证码
     $("#member-code-image").click(function(){
         $.getJSON('/site/captcha?refresh=1',function(json){

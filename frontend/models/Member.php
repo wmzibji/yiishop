@@ -3,7 +3,7 @@ namespace frontend\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-class Member extends ActiveRecord
+class Member extends ActiveRecord implements IdentityInterface
 {
     public $password;//明文密码
     public $rePassword;//确认密码
@@ -12,6 +12,7 @@ class Member extends ActiveRecord
     public $smsCode;//短信验证码
     //定义场景常量
     const SCENARIO_REGISTER = 'register';
+    const SCENARIO_LOGIN = 'login';
     //状态
     public static $status_options=[0=>'删除',1=>'正常'];
     public static function tableName()
@@ -22,19 +23,50 @@ class Member extends ActiveRecord
     public function rules()
     {
         return [
-
-            [['username','tel','email'], 'required'],
-            [['code',/*'smsCode',*/'password','rePassword'], 'required','on'=>self::SCENARIO_REGISTER],
+            [['rePassword','tel','email'], 'required','on'=>self::SCENARIO_REGISTER],
+            ['password','compare','compareAttribute'=>'rePassword','on'=>self::SCENARIO_REGISTER],
+            ['rememberMe','boolean','on'=>self::SCENARIO_LOGIN],
+            [['username','password','code'], 'required'],
 //            [['code'], 'captcha','on'=>self::SCENARIO_REGISTER],
             [['status', 'created_at', 'updated_at', 'last_login_time', 'last_login_ip'], 'integer'],
             [['username', 'password', 'tel', 'email'], 'string', 'max' => 50],
             [['auth_key'], 'string', 'max' => 32],
             [['password_hash', 'email'], 'string', 'max' => 100],
             [['tel'], 'string', 'max' => 11],
-            ['rememberMe','boolean'],
+
         ];
     }
+    //找到身份----------
+    public static function findIdentity($id)
+    {
+        return self::findOne(['id' => $id]);
+    }
+    //通过访问令牌查找----------------
+    public static function findIdentityByAccessToken($token, $type = null){}
+    //--------
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+    //验证 认证密钥
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
+    }
 
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
     /**
      * @inheritdoc
      */
@@ -85,6 +117,7 @@ class Member extends ActiveRecord
                 $model->last_login_time=time();
                 $model->last_login_ip=ip2long(Yii::$app->request->userIP);
                 $model->save();
+//                var_dump($model);exit;
                 return true;
             }else{
                 //密码错误---
@@ -95,5 +128,10 @@ class Member extends ActiveRecord
             $this->addError('username','该用户不存在！');
         }
         return false;
+    }
+    //建立address和member的关系
+    public function getAddressForm()
+    {
+        return $this->hasMany(AddressForm::className(),['id'=>'member_id']);
     }
 }

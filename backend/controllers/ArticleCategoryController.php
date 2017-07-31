@@ -7,7 +7,7 @@ use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
-class ArticleCategoryController extends Controller
+class ArticleCategoryController extends BaseController
 {
     //列表
     public function actionIndex()

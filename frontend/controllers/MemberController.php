@@ -2,6 +2,8 @@
 namespace frontend\controllers;
 use Yii;
 use frontend\models\Member;
+use frontend\models\AddressForm;
+use yii\captcha\CaptchaAction;
 use yii\web\Controller;
 use yii\helpers\Json;
 class MemberController extends Controller
@@ -11,7 +13,7 @@ class MemberController extends Controller
     //登录
     public function actionLogin()
     {
-        $model = new Member();
+        $model = new Member(['scenario'=>Member::SCENARIO_LOGIN]);
         if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             if($model->login()){
                 \Yii::$app->session->setFlash('success','登陆成功！');
@@ -19,11 +21,6 @@ class MemberController extends Controller
             }
         }
         return $this->render('login', ['model' => $model]);
-    }
-    //用户地址
-    public function actionAddress()
-    {
-        return $this->render('address');
     }
     //退出
     public function actionLogout()
@@ -67,6 +64,40 @@ class MemberController extends Controller
         }else{
             //验证失败，提示错误信息
             return Json::encode(['status'=>false,'msg'=>$model->getErrors()]);
+        }
+    }
+    //定义验证码操作
+    public function actions(){
+        return [
+            'captcha'=>[
+                'class'=>CaptchaAction::className(),
+                'minLength'=>4,
+                'maxLength'=>4,
+            ]
+        ];
+    }
+    //用户地址
+/*    public function actionAddress()
+    {
+        $indexs=AddressForm::find()->all();
+
+        return $this->render('address',['indexs'=>$indexs]);
+    }*/
+/*    public function actionAdd()
+    {
+        $adds=new AddressForm();
+        return $this->redirect('address',['adds'=>$adds]);
+    }*/
+    public function actionAddress()
+    {
+        $adds = new AddressForm();
+        if($adds->load(\Yii::$app->request->post()) && $adds->validate() ){
+            $adds->save(false);
+            //保存数据，提示保存成功
+            return Json::encode(['status'=>true,'msg'=>'保存成功']);
+        }else{
+            //验证失败，提示错误信息
+            return Json::encode(['status'=>false,'msg'=>$adds->getErrors()]);
         }
     }
 

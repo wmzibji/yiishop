@@ -7,7 +7,7 @@ use backend\models\RoleForm;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
-class RbacController extends \yii\web\Controller
+class RbacController extends BaseController
 {
         //---添加权限-----
     public function actionAddPermission()

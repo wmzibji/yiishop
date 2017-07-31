@@ -48,7 +48,32 @@
 		</div>
 		<div class="login_bd">
 			<div class="login_form fl">
-				<form action="" method="post">
+                <?php
+                $form = \yii\widgets\ActiveForm::begin(
+                    [
+                        'id' => 'login-form',
+                        'fieldConfig'=>[
+                        'options'=>[
+                            'tag'=>'li',
+                        ],
+                        'errorOptions'=>[
+                            'tag'=>'p'
+                        ]
+                    ]]
+                );
+                echo '<ul>';
+                echo $form->field($model,'username')->textInput(['class'=>'txt']);
+                echo $form->field($model,'password')->passwordInput(['class'=>'txt']);
+                echo $form->field($model,'code',['options'=>['class'=>'checkcode']])->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'member/captcha','template'=>'{input}{image}']);
+                echo '<li><label for="">&nbsp;</label>';
+                echo $form->field($model, 'rememberMe')->checkbox(['class'=>'chb']) ;
+                echo '</li>';
+                echo '<li><label for="">&nbsp;</label>';
+                echo yii\helpers\Html::submitButton('', ['class' => 'login_btn', 'name' => 'login-button']) ;
+                echo '</li></ul>';
+                \yii\widgets\ActiveForm::end();
+                ?>
+				<!--<form action="" method="post">
 					<ul>
 						<li>
 							<label for="">用户名：</label>
@@ -74,7 +99,7 @@
 							<input type="submit" value="" class="login_btn" />
 						</li>
 					</ul>
-				</form>
+				</form>-->
 
 				<div class="coagent mt15">
 					<dl>
@@ -132,9 +157,8 @@
     <script>
         //验证码
         $("#img-code").click(function(){
-            $.getJSON('/site/captcha?refresh=1',function(json){
+            $.getJSON('/member/captcha?refresh=1',function(json){
                 $("#img-code").attr('src',json.url);
-                //console.log(json.url);
             });
         });
     </script>

@@ -2,27 +2,26 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Brand;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
+use yii\web\ForbiddenHttpException;
 use yii\web\Request;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use flyok666\uploadifive\UploadAction;
 use flyok666\qiniu\Qiniu;
 use yii\filters\AccessControl;
-class BrandController extends \yii\web\Controller
+class BrandController extends BaseController
 {
-/*    public function behaviors()
+   /* public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ]
+            'myFilter' => [
+                'class' => RbacFilter::className(),
+                'nockeck'=>[
+                    'brand/s-upload'
                 ]
             ]
         ];
@@ -30,6 +29,10 @@ class BrandController extends \yii\web\Controller
     //列表
     public function actionIndex()
     {
+     /*  if(!\Yii::$app->user->can('brand/index')){
+           throw new ForbiddenHttpException('没有权限!');
+       }*/
+
         $query=Brand::find()->where(['!=','status','-1']);
         //分页工具
         $pager= new Pagination(

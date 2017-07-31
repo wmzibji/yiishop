@@ -15,7 +15,7 @@ use yii\db\Exception;
 /**
  * GoodsCategoryController implements the CRUD actions for GoodsCategory model.
  */
-class GoodsCategoryController extends Controller
+class GoodsCategoryController extends BaseController
 {
     /**
      * @inheritdoc

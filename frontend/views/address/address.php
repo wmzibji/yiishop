@@ -497,33 +497,33 @@
 						<ul>
 							<li id="li_name">
 								<label for=""><span>*</span>收 货 人：</label>
-								<input type="text" name="Address[name]" class="txt" />
+								<input type="text" name="name" class="txt" />
 							</li>
 							<li id="li_province">
 								<label for=""><span>*</span>所在地区：</label>
-                                <select name="Address[province]" id="province">
+                                <select name="province" id="province">
                                     <option value="">=请选择省=</option>
                                 </select>
 
-                                <select name="Address[city]" id="city">
+                                <select name="city" id="city">
                                     <option value="">=请选择城市=</option>
                                 </select>
 
-                                <select name="Address[area]" id="area">
+                                <select name="area" id="area">
                                     <option value="">=请选择区/县=</option>
                                 </select>
 							</li>
 							<li>
 								<label for=""><span>*</span>详细地址：</label>
-								<input type="text" name="Address[detailed_address]" class="txt address"  />
+								<input type="text" name="detailed_address" class="txt address"  />
 							</li>
 							<li>
 								<label for=""><span>*</span>手机号码：</label>
-								<input type="text" name="Address[tel]" class="txt" />
+								<input type="text" name="tel" class="txt" />
 							</li>
 							<li>
 								<label for="">&nbsp;</label>
-								<input type="checkbox" name="Address[status]" class="check" />设为默认地址
+								<input type="checkbox" name="status" class="check" />设为默认地址
 							</li>
 							<li>
 								<label for="">&nbsp;</label>
@@ -673,7 +673,7 @@
             //--------使用AJAX提交表单-----------
             $(".address_btn").click(function(){
                 $("#address_form p").text("");
-                $.post('/member/address',$("#address_form").serialize(),function(data){
+                $.post('/address/ajax-add',$("#address_form").serialize(),function(data){
                     var json = JSON.parse(data);
                     console.log(json);
                     if(json.status){

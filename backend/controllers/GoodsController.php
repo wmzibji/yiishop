@@ -20,7 +20,7 @@ use yii\filters\VerbFilter;
 /**
  * GoodsController implements the CRUD actions for Goods model.
  */
-class GoodsController extends Controller
+class GoodsController extends BaseController
 {
     /**
      * @inheritdoc

@@ -7,7 +7,7 @@ use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-class ArticleController extends \yii\web\Controller
+class ArticleController extends BaseController
 {
 /*    public function behaviors()
     {
