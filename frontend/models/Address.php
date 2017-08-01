@@ -1,16 +1,18 @@
 <?php
 namespace frontend\models;
-use yii\base\Model;
+use \yii\db\ActiveRecord;
 
-class AddressForm extends \yii\db\ActiveRecord{
-    public $name;
+class Address extends ActiveRecord{
+//    public $member_id;
+/*    public $name;
     public $member_id;
     public $province;
     public $city;
     public $area;
     public $detailed_address;
     public $tel;
-    public static $status_options=[0=>'非默认地址',1=>'默认地址'];
+    public $status;
+    public static $status_options=[0=>'非默认地址',1=>'默认地址'];*/
     public static function tableName()
     {
         return 'address';
@@ -18,8 +20,9 @@ class AddressForm extends \yii\db\ActiveRecord{
     public function rules()
     {
         return [
-            ['name','province','city','area','detailed_address','tel','status'], 'required'
-        ];
+                [['name','province', 'city','area','detailed_address','tel',], 'required'],
+                [['status'],'safe'],
+            ];
     }
     public function attributeLabels()
     {
@@ -27,9 +30,12 @@ class AddressForm extends \yii\db\ActiveRecord{
             'id' => 'ID',
             'name' => '收货人',
             'member_id' => '用户ID',
+            'province' => '省',
+            'city' => '市',
+            'area' => '县',
             'detailed_address' => '详细地址',
             'tel' => '手机号码',
-            'status' => '状态',
+            'status' => '状态（1默认地址，0非默认）\')',
         ];
     }
     //建立和member的关系
