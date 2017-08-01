@@ -129,7 +129,6 @@ class MemberController extends Controller
 
         return $this->render('cart',['models'=>$models,'carts'=>$carts]);
     }
-
     //修改购物车数据
     public function actionAjaxCart()
     {
