@@ -177,7 +177,7 @@
 				<div class="right_corner fl"></div>
 			</div>
 		</div>
-		<!-- 导航条部分 end -->
+		<!-- 导航条部分 end --->
 	</div>
 	<!-- 头部 end-->
 	

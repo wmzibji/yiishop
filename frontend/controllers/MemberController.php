@@ -163,7 +163,7 @@ class MemberController extends Controller
             return 'success';
         }
     }
-    //注册-----表单
+    //注册--------表单
     public function actionRegister1()
     {
 //        $this->layout = 'login';

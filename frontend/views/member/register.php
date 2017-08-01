@@ -133,7 +133,7 @@
 			<a href=""><img src="<?=Yii::getAlias('@web')?>/images/beian.gif" alt="" /></a>
 		</p>
 	</div>
-	<!-- 底部版权 end -->
+	<!-- 底部版权 end --->
 	<script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/jquery-1.8.3.min.js"></script>
 	<script type="text/javascript">
 		function bindPhoneNum(){

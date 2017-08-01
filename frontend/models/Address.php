@@ -38,7 +38,7 @@ class Address extends ActiveRecord{
             'status' => '状态（1默认地址，0非默认）\')',
         ];
     }
-    //建立和member的关系
+    //建立和member的关系--
     public function getMember()
     {
         return $this->hasOne(Member::className(),['member_id'=>'id']);

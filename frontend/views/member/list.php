@@ -163,7 +163,7 @@
                 </div>
 
 			</div>
-			<!--  商品分类部分 end--> 
+			<!--  商品分类部分 end--->
 
 			<div class="navitems fl">
 				<ul class="fl">

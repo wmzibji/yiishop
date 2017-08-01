@@ -36,7 +36,7 @@ class Member extends ActiveRecord implements IdentityInterface
 
         ];
     }
-    //找到身份----------
+    //找到身份-----------
     public static function findIdentity($id)
     {
         return self::findOne(['id' => $id]);

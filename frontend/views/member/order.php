@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="js/home.js"></script>
 </head>
 <body>
-		<!-- 顶部导航 start -->
+		<!-- 顶部导航 start --->
 	<div class="topnav">
 		<div class="topnav_bd w1210 bc">
 			<div class="topnav_left">
