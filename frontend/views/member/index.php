@@ -80,8 +80,13 @@
                     <b></b>
                 </dt>
                 <dd>
+                    <?php if(Yii::$app->user->isGuest):?>
                     <div class="prompt">
-                        您好，请<a href="">登录</a>
+                        您好，请[<?=\yii\helpers\Html::a('登录',['member/login'])?>]
+                    </div>
+                    <?php else:?>
+                    <div class="prompt">
+                            您好!
                     </div>
                     <div class="uclist mt10">
                         <ul class="list1 fl">
@@ -99,6 +104,7 @@
                         </ul>
 
                     </div>
+                    <?php endif;?>
                     <div style="clear:both;"></div>
                     <div class="viewlist mt10">
                         <h3>最近浏览的商品：</h3>
@@ -117,12 +123,16 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="">去购物车结算</a>
+                    <a href="<?=Yii::getAlias('@web')?>/member/cart">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
                     <div class="prompt">
-                        购物车中还没有商品，赶紧选购吧！
+                        <?php if($carts==null):?>
+                            您的购物车中还没有商品，赶紧选购吧！
+                        <?php else:?>
+                            您的购物车已有 <?=$carts?> 件商品，去结算！
+                        <?php endif;?>
                     </div>
                 </dd>
             </dl>

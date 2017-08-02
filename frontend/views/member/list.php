@@ -81,25 +81,31 @@
 						<b></b>
 					</dt>
 					<dd>
-						<div class="prompt">
-							您好，请<a href="">登录</a>
-						</div>
-						<div class="uclist mt10">
-							<ul class="list1 fl">
-								<li><a href="">用户信息></a></li>
-								<li><a href="">我的订单></a></li>
-								<li><a href="">收货地址></a></li>
-								<li><a href="">我的收藏></a></li>
-							</ul>
+                        <?php if(Yii::$app->user->isGuest):?>
+                            <div class="prompt">
+                                您好，请[<?=\yii\helpers\Html::a('登录',['member/login'])?>]
+                            </div>
+                        <?php else:?>
+                            <div class="prompt">
+                                您好!
+                            </div>
+                            <div class="uclist mt10">
+                                <ul class="list1 fl">
+                                    <li><a href="">用户信息></a></li>
+                                    <li><a href="">我的订单></a></li>
+                                    <li><a href="">收货地址></a></li>
+                                    <li><a href="">我的收藏></a></li>
+                                </ul>
 
-							<ul class="fl">
-								<li><a href="">我的留言></a></li>
-								<li><a href="">我的红包></a></li>
-								<li><a href="">我的评论></a></li>
-								<li><a href="">资金管理></a></li>
-							</ul>
+                                <ul class="fl">
+                                    <li><a href="">我的留言></a></li>
+                                    <li><a href="">我的红包></a></li>
+                                    <li><a href="">我的评论></a></li>
+                                    <li><a href="">资金管理></a></li>
+                                </ul>
 
-						</div>
+                            </div>
+                        <?php endif;?>
 						<div style="clear:both;"></div>
 						<div class="viewlist mt10">
 							<h3>最近浏览的商品：</h3>
@@ -117,15 +123,19 @@
 			<!-- 购物车 start -->
 			<div class="cart fl">
 				<dl>
-					<dt>
-						<a href="">去购物车结算</a>
-						<b></b>
-					</dt>
-					<dd>
-						<div class="prompt">
-							购物车中还没有商品，赶紧选购吧！
-						</div>
-					</dd>
+                    <dt>
+                        <a href="<?=Yii::getAlias('@web')?>/member/cart">去购物车结算</a>
+                        <b></b>
+                    </dt>
+                    <dd>
+                        <div class="prompt">
+                            <?php if($carts==null):?>
+                                您的购物车中还没有商品，赶紧选购吧！
+                            <?php else:?>
+                                您的购物车已有 <?=$carts?> 件商品，去结算！
+                            <?php endif;?>
+                        </div>
+                    </dd>
 				</dl>
 			</div>
 			<!-- 购物车 end -->
@@ -437,12 +447,17 @@
 				<a href="">4</a>
 				<a href="">5</a>
 				<a href="">下一页</a>
-				<a href="">尾页</a>&nbsp;&nbsp; 
+				<a href="">尾页</a>&nbsp;&nbsp;
 				<span>
 					<em>共8页&nbsp;&nbsp;到第 <input type="text" class="page_num" value="3"/> 页</em>
 					<a href="" class="skipsearch" href="javascript:;">确定</a>
 				</span>
-			</div>
+
+<!--			</div>-->
+            <!--<div  class="pull-right"><!--//分页工具条-->
+                <?php
+/*                echo \yii\widgets\LinkPager::widget(['pagination'=>$pager,'nextPageLabel'=>'下一页','prevPageLabel'=>'上一页','firstPageLabel'=>'首页','lastPageLabel'=>'尾页']);*/?>
+<!--            </div>-->
 			<!-- 分页信息 end -->
 
 		</div>

@@ -3,14 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>购物车页面</title>
-    <link rel="stylesheet" href="/style/base.css" type="text/css">
-    <link rel="stylesheet" href="/style/global.css" type="text/css">
-    <link rel="stylesheet" href="/style/header.css" type="text/css">
-    <link rel="stylesheet" href="/style/cart.css" type="text/css">
-    <link rel="stylesheet" href="/style/footer.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/base.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/global.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/header.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/cart.css" type="text/css">
+    <link rel="stylesheet" href="<?=Yii::getAlias('@web')?>/style/footer.css" type="text/css">
 
-    <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="/js/cart1.js"></script>
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="<?=Yii::getAlias('@web')?>/js/cart1.js"></script>
 
 </head>
 <body>
@@ -22,7 +22,14 @@
         </div>
         <div class="topnav_right fr">
             <ul>
-                <li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+                <li>您好，欢迎来到京西！
+                    <?php if(Yii::$app->user->isGuest):?>
+                        [<?=\yii\helpers\Html::a('登录',['member/login'])?>]
+                        [<?=\yii\helpers\Html::a('免费注册',['member/register'])?>]
+                    <?php else:?>
+                        [<?=\yii\helpers\Html::a('注销',['member/logout'])?>]
+                    <?php endif;?>
+                </li>
                 <li class="line">|</li>
                 <li>我的订单</li>
                 <li class="line">|</li>
@@ -39,7 +46,7 @@
 <!-- 页面头部 start -->
 <div class="header w990 bc mt15">
     <div class="logo w990">
-        <h2 class="fl"><a href="index.html"><img src="/images/logo.png" alt="京西商城"></a></h2>
+        <h2 class="fl"><a href="<?=Yii::getAlias('@web')?>/member/index"><img src="<?=Yii::getAlias('@web')?>/images/logo.png" alt="京西商城"></a></h2>
         <div class="flow fr">
             <ul>
                 <li class="cur">1.我的购物车</li>
@@ -69,27 +76,41 @@
         <tbody>
         <?php foreach ($models as $model):?>
             <tr data-id="<?=$model['id']?>">
-                <td class="col1"><a href=""><img src="http://admin.yii2shop.com<?=$model['logo']?>" alt="" /></a>
+                <td class="col1"><a href=""><img src="<?=$model['logo']?>" alt="" /></a>
                     <strong><a href=""><?=$model['name']?></a></strong></td>
                 <td class="col3">￥<span><?=$model['shop_price']?></span></td>
                 <td class="col4">
                     <a href="javascript:;" class="reduce_num"></a>
-                    <input type="text" name="amount" value="<?=$carts[$model['id']]?>" class="amount"/>
+                    <?php if(Yii::$app->user->isGuest):?>
+                        <input type="text" name="amount" value="<?= $carts[$model['id']] ?>" class="amount"/>
+                    <?php else:?>
+                        <input type="text" name="amount" value="<?=$model->amount['amount']?>" class="amount"/>
+                    <?php endif;?>
                     <a href="javascript:;" class="add_num"></a>
                 </td>
-                <td class="col5">￥<span><?=$model['shop_price']*$carts[$model['id']]?></span></td>
-                <td class="col6"><a href="">删除</a></td>
+                <?php if(Yii::$app->user->isGuest):?>
+                <td class="col5">￥<span><?=sprintf("%.2f",$model['shop_price']*$carts[$model['id']])?></span></td>
+                <?php else:?>
+                <td class="col5">￥<span><?=sprintf("%.2f",$model['shop_price']*$model->amount['amount'])?></span></td>
+                <?php endif;?>
+                <td class="col6">
+                    <?php if(Yii::$app->user->isGuest):?>
+                    <a href="<?=Yii::getAlias('@web')?>/member/del-cart?goods_id=<?=$model['id']?>">删除</a>
+                    <?php else:?>
+                    <a href="<?=Yii::getAlias('@web')?>/member/del-cart?goods_id=<?=$model->amount['goods_id']?>">删除</a>
+                    <?php endif;?>
+                </td>
             </tr>
         <?php endforeach;?>
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="6">购物金额总计： <strong>￥ <span id="total">1870.00</span></strong></td>
+            <td colspan="6">购物金额总计： <strong>￥ <span id="total"></span></strong></td>
         </tr>
         </tfoot>
     </table>
     <div class="cart_btn w990 bc mt10">
-        <a href="" class="continue">继续购物</a>
+        <a href="<?=Yii::getAlias('@web')?>/member/index" class="continue">继续购物</a>
         <a href="" class="checkout">结 算</a>
     </div>
 </div>
@@ -115,10 +136,10 @@
         © 2005-2013 京东网上商城 版权所有，并保留所有权利。  ICP备案证书号:京ICP证070359号
     </p>
     <p class="auth">
-        <a href=""><img src="/images/xin.png" alt="" /></a>
-        <a href=""><img src="/images/kexin.jpg" alt="" /></a>
-        <a href=""><img src="/images/police.jpg" alt="" /></a>
-        <a href=""><img src="/images/beian.gif" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/xin.png" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/kexin.jpg" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/police.jpg" alt="" /></a>
+        <a href=""><img src="<?=Yii::getAlias('@web')?>/images/beian.gif" alt="" /></a>
     </p>
 </div>
 <!-- 底部版权 end ---->

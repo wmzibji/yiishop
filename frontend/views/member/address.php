@@ -81,25 +81,31 @@
                     <b></b>
                 </dt>
                 <dd>
-                    <div class="prompt">
-                        您好，请<a href="">登录</a>
-                    </div>
-                    <div class="uclist mt10">
-                        <ul class="list1 fl">
-                            <li><a href="">用户信息></a></li>
-                            <li><a href="">我的订单></a></li>
-                            <li><a href="">收货地址></a></li>
-                            <li><a href="">我的收藏></a></li>
-                        </ul>
+                    <?php if(Yii::$app->user->isGuest):?>
+                        <div class="prompt">
+                            您好，请[<?=\yii\helpers\Html::a('登录',['member/login'])?>]
+                        </div>
+                    <?php else:?>
+                        <div class="prompt">
+                            您好!
+                        </div>
+                        <div class="uclist mt10">
+                            <ul class="list1 fl">
+                                <li><a href="">用户信息></a></li>
+                                <li><a href="">我的订单></a></li>
+                                <li><a href="">收货地址></a></li>
+                                <li><a href="">我的收藏></a></li>
+                            </ul>
 
-                        <ul class="fl">
-                            <li><a href="">我的留言></a></li>
-                            <li><a href="">我的红包></a></li>
-                            <li><a href="">我的评论></a></li>
-                            <li><a href="">资金管理></a></li>
-                        </ul>
+                            <ul class="fl">
+                                <li><a href="">我的留言></a></li>
+                                <li><a href="">我的红包></a></li>
+                                <li><a href="">我的评论></a></li>
+                                <li><a href="">资金管理></a></li>
+                            </ul>
 
-                    </div>
+                        </div>
+                    <?php endif;?>
                     <div style="clear:both;"></div>
                     <div class="viewlist mt10">
                         <h3>最近浏览的商品：</h3>
@@ -118,12 +124,16 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="">去购物车结算</a>
+                    <a href="<?=Yii::getAlias('@web')?>/member/cart">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
                     <div class="prompt">
-                        购物车中还没有商品，赶紧选购吧！
+                        <?php if($carts==null):?>
+                            您的购物车中还没有商品，赶紧选购吧！
+                        <?php else:?>
+                            您的购物车已有 <?=$carts?> 件商品，去结算！
+                        <?php endif;?>
                     </div>
                 </dd>
             </dl>
@@ -188,7 +198,7 @@
 <!-- 页面主体 start -->
 <div class="main w1210 bc mt10">
     <div class="crumb w1210">
-        <h2><strong>我的XX </strong><span>> 我的订单</span></h2>
+        <h2><strong>我的XX </strong><span>> 收货地址</span></h2>
     </div>
 
     <!-- 左侧导航菜单 start -->
@@ -205,11 +215,11 @@
 
             <dl>
                 <dt>账户中心 <b></b></dt>
-                <dd class="cur"><b>.</b><a href="">账户信息</a></dd>
+                <dd><b>.</b><a href="">账户信息</a></dd>
                 <dd><b>.</b><a href="">账户余额</a></dd>
                 <dd><b>.</b><a href="">消费记录</a></dd>
                 <dd><b>.</b><a href="">我的积分</a></dd>
-                <dd><b>.</b><a href="">收货地址</a></dd>
+                <dd class="cur"><b>.</b><a href="">收货地址</a></dd>
             </dl>
 
             <dl>
@@ -230,20 +240,24 @@
                 <dl>
                     <dt><?=$model1['name']?> <?=$model1['province']?> <?=$model1['city']?> <?=$model1['area']?> <?=$model1['detailed_address']?> <?=$model1['tel']?> </dt>
                     <dd>
-                        <a href="">修改</a>
-                        <a href="">删除</a>
-                        <a href="">设为默认地址</a>
+                        <a href="<?=Yii::getAlias('@web')?>/member/edit-address?id=<?=$model1['id']?>">修改</a>
+                        <a href="<?=Yii::getAlias('@web')?>/member/del-address?id=<?=$model1['id']?>">删除</a>
+                        <?php if(!$model1['status']==1):?>
+                            <a href="<?=Yii::getAlias('@web')?>/member/status-address?id=<?=$model1['id']?>">设为默认地址</a>
+                        <?php else: ?>
+                            默认地址
+                        <?php endif; ?>
                     </dd>
                 </dl>
             <?php endforeach;?>
-            <dl class="last"> <!-- 最后一个dl 加类last -->
-                <dt>2.许坤 四川省 成都市 高新区 仙人跳大街 17002810530 </dt>
-                <dd>
-                    <a href="">修改</a>
-                    <a href="">删除</a>
-                    <a href="">设为默认地址</a>
-                </dd>
-            </dl>
+            <!-- <dl class="last"> --><!-- 最后一个dl 加类last -->
+            <!--<dt>2.许坤 四川省 成都市 高新区 仙人跳大街 17002810530 </dt>-->
+            <!--<dd>
+                <a href="">修改</a>
+                <a href="">删除</a>
+                <a href="">设为默认地址</a>
+            </dd>-->
+            <!--            </dl>-->
 
         </div>
 
@@ -254,33 +268,37 @@
             <ul>
                 <li id="li_name">
                     <label for=""><span>*</span>收 货 人：</label>
-                    <input type="text" name="Address[name]" class="txt" />
+                    <input type="text" name="Address[name]" class="txt" value="<?=$model['name']?>" />
                 </li>
                 <li id="li_province">
                     <label for=""><span>*</span>所在地区：</label>
                     <select name="Address[province]" id="province">
                         <option value="">=请选择省=</option>
+                        <option value="<?=$model['province']?>" <?php echo $model['province'] ? "selected" : '' ;?>><?=$model['province']?></option>
                     </select>
 
                     <select name="Address[city]" id="city">
                         <option value="">=请选择城市=</option>
+                        <option value="<?=$model['city']?>" <?php echo $model['city'] ? "selected" : '' ;?>><?=$model['city']?></option>
                     </select>
 
                     <select name="Address[area]" id="area">
                         <option value="">=请选择区/县=</option>
+                        <option value="<?=$model['area']?>" <?php echo $model['area'] ? "selected" : '' ;?>><?=$model['area']?></option>
                     </select>
                 </li>
                 <li>
                     <label for=""><span>*</span>详细地址：</label>
-                    <input type="text" name="Address[detailed_address]" class="txt address"  />
+                    <input type="text" name="Address[detailed_address]" class="txt address" value="<?=$model['detailed_address']?>" />
                 </li>
                 <li>
                     <label for=""><span>*</span>手机号码：</label>
-                    <input type="text" name="Address[tel]" class="txt" />
+                    <input type="text" name="Address[tel]" class="txt" value="<?=$model['tel']?>"/>
                 </li>
                 <li>
                     <label for="">&nbsp;</label>
-                    <input type="checkbox" name="Address[status]" class="check" value="1"/>设为默认地址
+                    <input type="radio" name="Address[status]" class="check" value="1" <?php echo $model['status'] == 1 ? 'checked':''; ?>/>设为默认地址
+                    <input type="radio" name="Address[status]" class="check" value="0" <?php echo $model['status'] == 0 ? 'checked':''; ?>/>非默认地址
                 </li>
                 <li>
                     <label for="">&nbsp;</label>
@@ -426,26 +444,7 @@
             }
         });
     });
-    //--------使用AJAX提交表单-----------
-    /*$(".address_btn").click(function(){
-     $("#address_form p").text("");
-     $.post('/member/ajax-address',$("#address_form").serialize(),function(data){
-     var json = JSON.parse(data);
-     console.log(json);
-     if(json.status){
-     alert('添加成功！');
-     //                        window.location.href="/member/login";
-     }/!*else{
-     //注册失败-----显示错误信息
-     $(json.msg).each(function(i,errors){
-     console.log(errors);
-     $.each(errors,function(name,error){
-     $("#li_"+name+" p").text(error.join(","));
-     });
-     });
-     }*!/
-     });
-     });*/
+
 </script>
 </body>
 </html>

@@ -3,16 +3,6 @@ namespace frontend\models;
 use \yii\db\ActiveRecord;
 
 class Address extends ActiveRecord{
-//    public $member_id;
-    /*    public $name;
-        public $member_id;
-        public $province;
-        public $city;
-        public $area;
-        public $detailed_address;
-        public $tel;
-        public $status;
-        public static $status_options=[0=>'非默认地址',1=>'默认地址'];*/
     public static function tableName()
     {
         return 'address';

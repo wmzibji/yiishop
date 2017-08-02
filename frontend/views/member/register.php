@@ -140,7 +140,7 @@
         //启用输入框
         $('#captcha').prop('disabled',false);
 
-        var time=30;
+        var time=60;
         var interval = setInterval(function(){
             time--;
             if(time<=0){
@@ -154,6 +154,9 @@
 
             $('#get_captcha').val(html);
         },1000);
+         /*var $smsCode = rand(1000,9999);
+         var $tel = $('#tel').val(html);
+         var $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$smsCode])->send();*/
     }
     //--------使用AJAX提交表单-----------
     $(".login_btn").click(function(){
@@ -181,6 +184,7 @@
             $("#member-code-image").attr('src',json.url);
         });
     });
+
 </script>
 </body>
 </html>

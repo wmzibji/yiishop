@@ -59,6 +59,13 @@ return [
                 // 自定义路由规则
             ],
         ],
+        'sms'=>[
+            'class'=>\frontend\components\AliyunSms::className(),
+            'accessKeyId'=>'LTAIPvV0nzKiGP7h',
+            'accessKeySecret'=>'qVxT7SnCTkORdX0NviiRAjOg1XByrc',
+            'signName'=>'文明忠的个人空间',
+            'templateCode'=>'SMS_80200055'
+        ],
     ],
     'params' => $params,
 ];

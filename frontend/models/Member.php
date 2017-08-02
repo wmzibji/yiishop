@@ -25,6 +25,7 @@ class Member extends ActiveRecord implements IdentityInterface
         return [
             [['rePassword','tel','email'], 'required','on'=>self::SCENARIO_REGISTER],
             ['password','compare','compareAttribute'=>'rePassword','on'=>self::SCENARIO_REGISTER],
+//            [['smsCode'], 'required','on'=>self::SCENARIO_REGISTER],
             ['rememberMe','boolean','on'=>self::SCENARIO_LOGIN],
             [['username','password','code'], 'required'],
 //            [['code'], 'captcha','on'=>self::SCENARIO_REGISTER],
@@ -88,6 +89,7 @@ class Member extends ActiveRecord implements IdentityInterface
             'last_login_ip' => '最后登录IP',
             'rememberMe' => '记住我',
             'code' => '验证码',
+            'smsCode' => '短信验证码',
         ];
     }
     public function beforeSave($insert)

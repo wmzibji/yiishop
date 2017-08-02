@@ -100,25 +100,31 @@
                     <b></b>
                 </dt>
                 <dd>
-                    <div class="prompt">
-                        您好，请<a href="">登录</a>
-                    </div>
-                    <div class="uclist mt10">
-                        <ul class="list1 fl">
-                            <li><a href="">用户信息></a></li>
-                            <li><a href="">我的订单></a></li>
-                            <li><a href="">收货地址></a></li>
-                            <li><a href="">我的收藏></a></li>
-                        </ul>
+                    <?php if(Yii::$app->user->isGuest):?>
+                        <div class="prompt">
+                            您好，请[<?=\yii\helpers\Html::a('登录',['member/login'])?>]
+                        </div>
+                    <?php else:?>
+                        <div class="prompt">
+                            您好!
+                        </div>
+                        <div class="uclist mt10">
+                            <ul class="list1 fl">
+                                <li><a href="">用户信息></a></li>
+                                <li><a href="">我的订单></a></li>
+                                <li><a href="">收货地址></a></li>
+                                <li><a href="">我的收藏></a></li>
+                            </ul>
 
-                        <ul class="fl">
-                            <li><a href="">我的留言></a></li>
-                            <li><a href="">我的红包></a></li>
-                            <li><a href="">我的评论></a></li>
-                            <li><a href="">资金管理></a></li>
-                        </ul>
+                            <ul class="fl">
+                                <li><a href="">我的留言></a></li>
+                                <li><a href="">我的红包></a></li>
+                                <li><a href="">我的评论></a></li>
+                                <li><a href="">资金管理></a></li>
+                            </ul>
 
-                    </div>
+                        </div>
+                    <?php endif;?>
                     <div style="clear:both;"></div>
                     <div class="viewlist mt10">
                         <h3>最近浏览的商品：</h3>
@@ -137,12 +143,16 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="">去购物车结算</a>
+                    <a href="<?=Yii::getAlias('@web')?>/member/cart">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
                     <div class="prompt">
-                        购物车中还没有商品，赶紧选购吧！
+                        <?php if($carts==null):?>
+                            您的购物车中还没有商品，赶紧选购吧！
+                        <?php else:?>
+                            您的购物车已有 <?=$carts?> 件商品，去结算！
+                        <?php endif;?>
                     </div>
                 </dd>
             </dl>
@@ -391,7 +401,7 @@
                     <li><span>上架时间：</span><?=date('Y-h-d',$model['create_time'])?></li>
                     <li class="star"><span>商品评分：</span> <strong></strong><a href="">(已有 <?=$model['view_times']?> 人评价)</a></li> <!-- 此处的星级切换css即可 默认为5星 star4 表示4星 star3 表示3星 star2表示2星 star1表示1星 -->
                 </ul>
-                <form action="cart" method="get" class="choose">
+                <form action="<?=\yii\helpers\Url::to(['member/add-to-cart'])?>" method="get" class="choose">
                     <ul>
 
                         <li>
@@ -409,6 +419,7 @@
                             <dl>
                                 <dt>&nbsp;</dt>
                                 <dd>
+                                    <input type="hidden" name="goods_id" value="<?=$model->id?>"/><!----商品ID--->
                                     <input type="submit" value="" class="add_btn" />
                                 </dd>
                             </dl>
