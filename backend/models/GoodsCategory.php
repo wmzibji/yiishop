@@ -107,4 +107,12 @@ class GoodsCategory extends \yii\db\ActiveRecord
         ];
         return isset($infos[$msg])?$infos[$msg]:$msg;
     }
+    //找子分类--
+    public function getChildren(){
+        return $this->hasMany(GoodsCategory::className(),['parent_id'=>'id']);
+    }
+    //找父分类
+    public function getFather(){
+        return $this->hasOne(GoodsCategory::className(),['parent_id'=>'id']);
+    }
 }
