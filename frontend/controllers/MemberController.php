@@ -6,11 +6,14 @@ use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
 use backend\models\GoodsSearchForm;
 use frontend\models\Cart;
+use frontend\models\Order;
+use frontend\models\OrderGoods;
 use Yii;
 use frontend\models\Member;
 use frontend\models\Address;
 use yii\captcha\CaptchaAction;
 use yii\data\Pagination;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\helpers\Json;
 use yii\db\ActiveRecord;
@@ -23,10 +26,41 @@ class MemberController extends Controller
     //登录
     public function actionLogin()
     {
+        if(!Yii::$app->user->isGuest){
+            return $this->goBack('index');
+        };
         $model = new Member(['scenario'=>Member::SCENARIO_LOGIN]);
         if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             if($model->login()){
-                return $this->redirect(['member/address']);
+                //登录后把cookie中数据写入数据表
+            $cookies = Yii::$app->request->cookies;
+            //---获取cookie中的购物车商品数据----------------
+            $cookie_cart = $cookies->get('cart');
+            if($cookie_cart==null){
+                $carts = [];
+            }else{
+                $carts = unserialize($cookie_cart->value);
+            }
+            //--循环遍历cookie购物车数据------
+                foreach($carts as $goods_id=>$amount){
+                    //---查询数据库该用户名下是否有该商品-----------
+                    $cart = Cart::findOne(['goods_id'=>$goods_id,'member_id'=>Yii::$app->user->id]);
+                    if($cart){
+                        //----如果数据表已经有这个商品,就合并cookie中的数量
+                        $cart->amount+=$amount;
+                        $cart->save();
+                    }else{
+                        //----如果数据表没有这个商品,就添加这个商品到购物车表
+                        $cart=new Cart();
+                        $cart->amount=$amount;
+                        $cart->goods_id=$goods_id;
+                        $cart->member_id=Yii::$app->user->id;
+                        $cart->save();
+                    }
+                }
+                //---同步完后，清空cookie购物车数据----调用cookie对象的删除方法--
+                Yii::$app->response->cookies->remove('cart');
+                return $this->redirect(['member/index']);
             }
         }
         return $this->render('login', ['model' => $model]);
@@ -100,12 +134,12 @@ class MemberController extends Controller
             } ;
         }else{
             //---登录---cart表中查询数据----------
-            $carts=array_sum(Cart::find()->select('amount')->where(['member_id'=>Yii::$app->user->getId()])->column());
+            $carts=array_sum(Cart::find()->select('amount')->where(['member_id'=>Yii::$app->user->id])->column());
 //            var_dump($carts);exit;
         }
         return $this->render('list',['nav'=>$nav,'model1s'=>$model1s,'models'=>$models,'model'=>$model,'pager'=>$pager,'carts'=>$carts]);
     }
-    //商品
+    //商品详情
     public function actionGoods($id)
     {
         $nav=GoodsCategory::find()->where(['depth'=>0])->all();//导航分类
@@ -132,7 +166,7 @@ class MemberController extends Controller
             } ;
         }else{
             //---登录---cart表中查询数据----------
-            $carts=array_sum(Cart::find()->select('amount')->where(['member_id'=>Yii::$app->user->getId()])->column());
+            $carts=array_sum(Cart::find()->select('amount')->where(['member_id'=>Yii::$app->user->id])->column());
 //            var_dump($carts);exit;
         }
         return $this->render('goods',['nav'=>$nav,'model'=>$model,'model1s'=>$model1s,'model1'=>$model1,'fathers'=>$fathers,'picture'=>$picture,'intro'=>$intro,'carts'=>$carts]);
@@ -170,30 +204,14 @@ class MemberController extends Controller
             $cookies->add($cookie);
         }else{
             //----用户已登录，操作购物车数据表---------
-
-            /*//登录后把cookie中数据写入数据表
-            $cookies = Yii::$app->request->cookies;
-            //---获取cookie中的购物车商品数据----------------
-            $cookie_cart = $cookies->get('cart');
-            if($cookie_cart==null){
-                $carts = [];
-            }else{
-                $carts = unserialize($cookie_cart->value);
-                $goods_ids=array_keys($carts);
-                $amounts=array_values($carts);
-                var_dump($goods_ids);echo 'br';
-                var_dump($amounts);exit;
-            }*/
-
-
             //---------查询数据表是否已有该商品---------
-            $cart=Cart::findOne(['goods_id'=>$goods_id]);
+            $cart=Cart::findOne(['goods_id'=>$goods_id,'member_id'=>Yii::$app->user->id]);
             if($cart==null){
                 //---没有 添加数据到数据表------------
                 $cart=new Cart();
                 $cart->goods_id=$goods_id;
                 $cart->amount=$amount;
-                $cart->member_id=Yii::$app->user->getId();
+                $cart->member_id=Yii::$app->user->id;
                 $cart->insert();
                 $cart->save();
             }else{
@@ -202,7 +220,7 @@ class MemberController extends Controller
                 $cart->save();
             }
         }
-//        return $this->redirect(['cart']);
+        return $this->redirect(['cart']);
     }
     //购物车
     public function actionCart()
@@ -221,23 +239,10 @@ class MemberController extends Controller
             $models = Goods::find()->where(['in','id',array_keys($carts)])->asArray()->all();
             return $this->render('cart',['models'=>$models,'carts'=>$carts]);
         }else{
-           /* //登录后把cookie中数据写入数据表
-            $cookies = Yii::$app->request->cookies;
-            //---获取cookie中的购物车商品数据----------------
-            $cookie_cart = $cookies->get('cart');
-            if($cookie_cart==null){
-                $carts = [];
-            }else{
-                $carts = unserialize($cookie_cart->value);
-                $goods_ids=array_keys($carts);
-                $amounts=array_values($carts);
-            }*/
-
-
             //----------已登录--从数据表取出商品数据------------
             //用户已登录，购物车数据从数据表取
             //根据用户ID查询cart表中用户的所有goods_id数据----为数组
-            $goods_ids=Cart::find()->select('goods_id')->where(['member_id'=>Yii::$app->user->getId()])->asArray()->column();
+            $goods_ids=Cart::find()->select('goods_id')->where(['member_id'=>Yii::$app->user->id])->asArray()->column();
             //查询数组中商品ID的商品数据
             $models=Goods::find()->where(['in','id',$goods_ids])->all();
             //商品数量在商品模型中建立get方法
@@ -278,13 +283,16 @@ class MemberController extends Controller
         }else {
             //用户已登录，操作购物车数据表
             //---------查询数据表是否已有该商品---------
-            $cart=Cart::findOne(['goods_id'=>$goods_id]);
+            //$cart=Cart::findOne(['goods_id'=>$goods_id,'member_id'=>Yii::$app->user->id]);
             //---已有该商品数据 修改数据到数据表------------
-            $cart->updateall(['amount'=>$amount],['id'=>$cart['id']]);
-            $cart->save();
+//            var_dump($cart);exit;
+            /*$cart->amount=$amount;
+            $cart->save();*/
+            Cart::updateAll(['amount'=>$amount],['goods_id'=>$goods_id,'member_id'=>Yii::$app->user->id]);
             return 'success';
         }
     }
+    //删除购物车数据
     public function actionDelCart($goods_id)
     {
         //--------用户未登录-----修改cookie数据----------
@@ -304,15 +312,85 @@ class MemberController extends Controller
             $cookies->add($cookie);
         }else{
             //--------用户已登录-----修改数据表数据----------
-            Cart::findOne(['goods_id'=>$goods_id])->delete();
+            Cart::findOne(['goods_id'=>$goods_id,'member_id'=>Yii::$app->user->id])->delete();
         };
         return $this->redirect(['cart']);
     }
+    //订单
+    public function actionOrder(){
+        $model = new Order();
+            //---开启事务----
+        $transaction = Yii::$app->db->beginTransaction();
+        if($model->load(Yii::$app->request->post()) && $model->validate()) {
+            try {
+                //-------配送方式---
+                $model->delivery_name = Order::$deliveries[$model->delivery_id]['name'];
+                $model->delivery_price = Order::$deliveries[$model->delivery_id]['price'];
+                //---支付方式-----
+                $model->payment_name = Order::$payments[$model->payment_id]['name'];
+                //----收货人信息------
+
+                $address=Address::find()->where(['member_id'=>Yii::$app->user->id])->all();
+                //根据$model->member_id 从地址表获取以下数据，并赋值给订单相应字段
+                $model->member_id = Yii::$app->user->id;//用户ID
+                $model->name = $address[$model->member_id]['name'];//收货人
+                $model->province = $address[$model->member_id]['province'];//省
+                $model->city = $address[$model->member_id]['city'];//市
+                $model->area = $address[$model->member_id]['area'];//县
+                $model->address = $address[$model->member_id]['detailed_address'];//详细地址
+                $model->tel = $address[$model->member_id]['tel'];//电话号码
+                $model->save();
+                //（检查库存，如果足够）保存订单商品表
+                //检查库存：购物车商品的数量和商品表库存对比，足够
+                    //---获取购物车数据----
+                $carts=Cart::find()->where(['member_id'=>Yii::$app->user->id])->all();
+                foreach ($carts as $cart) {
+                    $goods = Goods::findOne(['id' => $cart->goods_id]);
+                    $order_goods = new OrderGoods();
+                        //--购物车商品数量《--》商品库存-------
+                    if ($cart->amount <= $goods->stock) {
+                        //$order_goods的其他属性赋值
+                        $order_goods->order_id = $model->id;//订单id
+                        $order_goods->goods_id = $goods->id;//商品id
+                        $order_goods->goods_name = $goods->name;//商品名称
+                        $order_goods->logo = $goods->logo;//图片
+                        $order_goods->price = $goods->shop_price;//价格
+                        $order_goods->amount = $cart->amount;//数量
+                        $order_goods->total = $cart->amount * $goods->shop_price;//小计
+                        $order_goods->save();
+                        //扣减对应商品的库存
+                        $stock=$goods->stock -$cart->amount;
+                        Goods::updateAll(['stock'=>$stock],['id'=>$cart->goods_id]);
+                    } else {
+                        //（检查库存，如果不够）
+                        //抛出异常
+                        throw new Exception('商品库存不足，无法继续下单，请修改购物车商品数量');
+                    }
+                }
+                //下单成功后清除购物车
+                Cart::deleteAll(['member_id'=>Yii::$app->user->id]);
+                //提交事务
+                $transaction->commit();
+            } catch (Exception $e) {
+                //回滚
+                $transaction->rollBack();
+            }
+        }
+        $carts = Cart::find()->where(['member_id'=>Yii::$app->user->id])->all();//购物车数据
+        //根据用户ID查询cart表中用户的所有goods_id数据----为数组
+        $goods_ids=Cart::find()->select('goods_id')->where(['member_id'=>Yii::$app->user->id])->asArray()->column();
+        //查询数组中商品ID的商品数据
+        $goods=Goods::find()->where(['in','id',$goods_ids])->all();
+        $address = Address::find()->where(['member_id'=>Yii::$app->user->id])->all();//地址数据
+        return $this->render('order',['goods'=>$goods,'address'=>$address]);
+    }
+
+
     //用户地址
     public function actionAddress()
     {
         $nav=GoodsCategory::find()->where(['depth'=>0])->all();//导航商品分类
-        $model1s = Address::find()->where(['member_id'=>\Yii::$app->user->getId()])->all();//收货地址展示
+        $model1s = Address::find()->where(['member_id'=>\Yii::$app->user->id])->all();//收货地址展示
         $model = new Address();
         $request = new Request();
         //开始验证数据
@@ -322,7 +400,7 @@ class MemberController extends Controller
                 if(\Yii::$app->user->isGuest){
                     return $this->redirect(['login']);
                 }else{
-                    $model->member_id = \Yii::$app->user->getId();
+                    $model->member_id = \Yii::$app->user->Id;
                     $model->save();
                     return $this->redirect(['address']);
                 }
@@ -349,6 +427,7 @@ class MemberController extends Controller
         }
         return $this->render('address',['nav'=>$nav,'model1s'=>$model1s,'model'=>$model,'carts'=>$carts]);
     }
+    //修改地址
     public function actionEditAddress($id)
     {
         $nav=GoodsCategory::find()->where(['depth'=>0])->all();//导航商品分类
@@ -384,14 +463,14 @@ class MemberController extends Controller
         }
         return $this->render('address',['nav'=>$nav,'model'=>$model,'model1s'=>$model1s,'carts'=>$carts]);
     }
+    //删除地址
     public function actionDelAddress($id){
         Address::findOne(['id'=>$id])->delete();
         return $this->redirect(['address']);
     }
+    //设置默认地址
     public function actionStatusAddress($id){
-        $model=Address::findOne(['id'=>$id]);
-        $model->updateall(['status'=>1],['id'=>$id]);
-        $model->save();
+        Address::updateall(['status'=>1],['id'=>$id]);
         return $this->redirect(['address']);
     }
     //注册--------表单
@@ -413,28 +492,23 @@ class MemberController extends Controller
         $model = new Member();
         $model->scenario = Member::SCENARIO_REGISTER;
         return $this->render('register',['model'=>$model]);
-    }//AJAX表单验证
+    }
+    //AJAX表单验证
     public function actionAjaxRegister()
     {
         $model = new Member();
         $model->scenario = Member::SCENARIO_REGISTER;
         if($model->load(\Yii::$app->request->post()) && $model->validate() ){
-
-//            $smsCode = rand(1000,9999);
-//            $tel = $model->tel;
-//            $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$smsCode])->send();
-            //将短信验证码保存redis（session，mysql）
-//            \Yii::$app->session->set('smsCode_'.$tel,$smsCode);
-//            //验证
-//            $code2 = \Yii::$app->session->get('smsCode_'.$tel);
-//            if($model->smsCode == $smsCode){
-
+            $tel =$model->tel;
+            $smsCode =$model->smsCode;
+            $code = \Yii::$app->session->get('code_'.$tel);
+            if($code == $smsCode){
                 $model->save(false);
                 //保存数据，提示保存成功
                 return Json::encode(['status'=>true,'msg'=>'注册成功']);
-//            }
-
-
+            }else{
+                return Json::encode(['status'=>false,'msg'=>$model->getErrors()]);
+            }
         }else{
             //验证失败，提示错误信息
             return Json::encode(['status'=>false,'msg'=>$model->getErrors()]);
@@ -450,33 +524,13 @@ class MemberController extends Controller
             ]
         ];
     }
-
-    public function actionAjaxAddress()
+    //短信验证码
+    public function actionSmsCode()
     {
-        $adds = new AddressForm();
-        if($adds->load(\Yii::$app->request->post()) && $adds->validate() ){
-            $adds->save(false);
-            //保存数据，提示保存成功
-            return Json::encode(['status'=>true,'msg'=>'保存成功']);
-        }else{
-            //验证失败，提示错误信息
-            return Json::encode(['status'=>false,'msg'=>$adds->getErrors()]);
-        }
-    }
-    //测试发送短信功能
-    public function actionTestSms()
-    {
-
+        $tel =\Yii::$app->request->post('tel');
         $code = rand(1000,9999);
-        $tel = '18828098518';
         $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$code])->send();
         //将短信验证码保存redis（session，mysql）
         \Yii::$app->session->set('code_'.$tel,$code);
-        //验证
-        $code2 = \Yii::$app->session->get('code_'.$tel);
-        if($code == $code2){
-
-        }
-
     }
 }

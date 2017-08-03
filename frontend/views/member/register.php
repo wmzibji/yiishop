@@ -73,14 +73,17 @@
                 <li id="li_tel">
                     <label for="">手机号码：</label>
                     <input type="text" class="txt" value="" name="Member[tel]" id="tel" placeholder=""/>
+                    <p></p>
                 </li>
                 <li id="li_smsCode">
                     <label for="">验证码：</label>
-                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+                    <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="Member[smsCode]" disabled="disabled" id="captcha"/>
+                    <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+                    <p></p>
 
                 </li>
                 <li id="li_code" class="checkcode">
-                    <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className())?>
+                    <?=$form->field($model,'code')->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'member/captcha'])?>
                     <p></p>
                 </li>
 
@@ -154,9 +157,6 @@
 
             $('#get_captcha').val(html);
         },1000);
-         /*var $smsCode = rand(1000,9999);
-         var $tel = $('#tel').val(html);
-         var $res = \Yii::$app->sms->setPhoneNumbers($tel)->setTemplateParam(['code'=>$smsCode])->send();*/
     }
     //--------使用AJAX提交表单-----------
     $(".login_btn").click(function(){
@@ -180,11 +180,18 @@
     });
     //验证码
     $("#member-code-image").click(function(){
-        $.getJSON('/site/captcha?refresh=1',function(json){
+        $.getJSON('/member/captcha?refresh=1',function(json){
             $("#member-code-image").attr('src',json.url);
         });
     });
-
+    //短信验证码
+    $('#get_captcha').click(function () {
+        var tel=$('#tel').val();
+        //console.debug(tel);
+        $.post('sms-code',{tel:tel},function(data){
+            //console.log(data);
+        });
+    })
 </script>
 </body>
 </html>

@@ -105,6 +105,10 @@ class Goods extends \yii\db\ActiveRecord
         ];
     }
     public function getAmount(){
-        return $this->hasOne(Cart::className(),['goods_id'=>'id']);
+        /*$th=$this->hasMany(Cart::className(),['goods_id'=>'id']);
+        $carts = unserialize($th->value);
+        $ths=$th[4];
+        return $ths;*/
+        return $this->hasOne(Cart::className(),['goods_id'=>'id'])->where(['member_id'=>Yii::$app->user->id]);
     }
 }

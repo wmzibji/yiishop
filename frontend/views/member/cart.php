@@ -89,9 +89,9 @@
                     <a href="javascript:;" class="add_num"></a>
                 </td>
                 <?php if(Yii::$app->user->isGuest):?>
-                <td class="col5">￥<span><?=sprintf("%.2f",$model['shop_price']*$carts[$model['id']])?></span></td>
+                <td class="col5">￥<span><?=$model['shop_price']*$carts[$model['id']]?></span></td>
                 <?php else:?>
-                <td class="col5">￥<span><?=sprintf("%.2f",$model['shop_price']*$model->amount['amount'])?></span></td>
+                <td class="col5">￥<span><?=$model['shop_price']*$model->amount['amount']?></span></td>
                 <?php endif;?>
                 <td class="col6">
                     <?php if(Yii::$app->user->isGuest):?>
@@ -111,7 +111,7 @@
     </table>
     <div class="cart_btn w990 bc mt10">
         <a href="<?=Yii::getAlias('@web')?>/member/index" class="continue">继续购物</a>
-        <a href="" class="checkout">结 算</a>
+        <a href="<?=Yii::getAlias('@web')?>/member/order" class="checkout">结 算</a>
     </div>
 </div>
 <!-- 主体部分 end -->
