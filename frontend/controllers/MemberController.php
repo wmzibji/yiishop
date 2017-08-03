@@ -379,10 +379,15 @@ class MemberController extends Controller
         $carts = Cart::find()->where(['member_id'=>Yii::$app->user->id])->all();//购物车数据
         //根据用户ID查询cart表中用户的所有goods_id数据----为数组
         $goods_ids=Cart::find()->select('goods_id')->where(['member_id'=>Yii::$app->user->id])->asArray()->column();
+        $num = Cart::find()->where(['member_id'=>Yii::$app->user->id])->sum('amount');//商品总数
         //查询数组中商品ID的商品数据
         $goods=Goods::find()->where(['in','id',$goods_ids])->all();
         $address = Address::find()->where(['member_id'=>Yii::$app->user->id])->all();//地址数据
-        return $this->render('order',['goods'=>$goods,'address'=>$address]);
+        $prices=0;
+        foreach ($goods as $good ) {
+            $prices += $good['shop_price'] * $good->amount['goods_id'];
+        }
+        return $this->render('order',['goods'=>$goods,'address'=>$address,'num'=>$num,'prices'=>$prices]);
     }
 
 

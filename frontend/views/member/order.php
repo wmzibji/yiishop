@@ -71,9 +71,9 @@
 			<div class="address">
 				<h3>收货人信息</h3>
 				<div class="address_info">
-				<p>
-					<input type="radio" value="1" name="address_id"/>张三  17002810530  北京市 昌平区 一号楼大街 </p>
-					<input type="radio" value="1" name="address_id"/>李四  17002810530  四川省 成都市 高新区 和平街 </p>
+                    <?php foreach ($address as $address1):?>
+                        <p><input type="radio" value="1" name="address_id"/><?=$address1['name']?> <?=$address1['province']?> <?=$address1['city']?> <?=$address1['area']?> <?=$address1['detailed_address']?> <?=$address1['tel']?> </p>
+                    <?php endforeach;?>
 				</div>
 
 
@@ -198,26 +198,24 @@
 						</tr>	
 					</thead>
 					<tbody>
+
+                        <?php foreach($goods as $good):?>
 						<tr>
-							<td class="col1"><a href=""><img src="<?=Yii::getAlias('@web')?>/images/cart_goods1.jpg" alt="" /></a>  <strong><a href="">【1111购物狂欢节】惠JackJones杰克琼斯纯羊毛菱形格</a></strong></td>
-							<td class="col3">￥499.00</td>
-							<td class="col4"> 1</td>
-							<td class="col5"><span>￥499.00</span></td>
+							<td class="col1"><a href=""><img src="<?=$good['logo']?>" alt="" /></a>  <strong><a href=""><?=$good['name']?></a></strong></td>
+							<td class="col3">￥<?=$good['shop_price']?></td>
+							<td class="col4"> <?=$good->amount['amount']?></td>
+							<td class="col5">￥<span><?=$good['shop_price']*$good->amount['amount']?></span></td>
 						</tr>
-						<tr>
-							<td class="col1"><a href=""><img src="<?=Yii::getAlias('@web')?>/images/cart_goods2.jpg" alt="" /></a> <strong><a href="">九牧王王正品新款时尚休闲中长款茄克EK01357200</a></strong></td>
-							<td class="col3">￥1102.00</td>
-							<td class="col4">1</td>
-							<td class="col5"><span>￥1102.00</span></td>
-						</tr>
+                        <?php endforeach;?>
+
 					</tbody>
 					<tfoot>
 						<tr>
 							<td colspan="5">
 								<ul>
 									<li>
-										<span>4 件商品，总商品金额：</span>
-										<em>￥5316.00</em>
+										<span> 共 <?=$num?> 件商品，总商品金额：</span>￥
+										<em><?=$prices?></em>
 									</li>
 									<li>
 										<span>返现：</span>
