@@ -46,7 +46,7 @@
 	<!-- 页面头部 start -->
 	<div class="header w990 bc mt15">
 		<div class="logo w990">
-			<h2 class="fl"><a href="index.html"><img src="<?=Yii::getAlias('@web')?>/images/logo.png" alt="京西商城"></a></h2>
+			<h2 class="fl"><a href="index"><img src="<?=Yii::getAlias('@web')?>/images/logo.png" alt="京西商城"></a></h2>
 			<div class="flow fr flow2">
 				<ul>
 					<li>1.我的购物车</li>
@@ -72,7 +72,7 @@
 				<h3>收货人信息</h3>
 				<div class="address_info">
                     <?php foreach ($address as $address1):?>
-                        <p><input type="radio" value="1" name="address_id"/><?=$address1['name']?> <?=$address1['province']?> <?=$address1['city']?> <?=$address1['area']?> <?=$address1['detailed_address']?> <?=$address1['tel']?> </p>
+                        <p><input type="radio" value="<?=$address1['id']?>" name="address" checked=""/><?=$address1['name']?> <?=$address1['province']?> <?=$address1['city']?> <?=$address1['area']?> <?=$address1['detailed_address']?> <?=$address1['tel']?> </p>
                     <?php endforeach;?>
 				</div>
 
@@ -95,32 +95,17 @@
 							</tr>
 						</thead>
 						<tbody>
+
+                            <?php foreach (\frontend\models\Order::$deliveries as $delivery_id=>$delivery):?>
 							<tr class="cur">	
 								<td>
-									<input type="radio" name="delivery" checked="checked" />普通快递送货上门
-
+									<input type="radio" name="delivery" checked="" value="<?=$delivery_id?>"/><?=$delivery['name']?>
 								</td>
-								<td>￥10.00</td>
-								<td>每张订单不满499.00元,运费15.00元, 订单4...</td>
+								<td>￥<?=$delivery['price']?></td>
+								<td><?=$delivery['detail']?></td>
 							</tr>
-							<tr>
-								
-								<td><input type="radio" name="delivery" />特快专递</td>
-								<td>￥40.00</td>
-								<td>每张订单不满499.00元,运费40.00元, 订单4...</td>
-							</tr>
-							<tr>
-								
-								<td><input type="radio" name="delivery" />加急快递送货上门</td>
-								<td>￥40.00</td>
-								<td>每张订单不满499.00元,运费40.00元, 订单4...</td>
-							</tr>
-							<tr>
+                            <?php endforeach;?>
 
-								<td><input type="radio" name="delivery" />平邮</td>
-								<td>￥10.00</td>
-								<td>每张订单不满499.00元,运费15.00元, 订单4...</td>
-							</tr>
 						</tbody>
 					</table>
 
@@ -134,23 +119,16 @@
 
 
 				<div class="pay_select">
-					<table> 
+					<table>
+                        <?php foreach (\frontend\models\Order::$payments as $payment_id=>$payment):?>
 						<tr class="cur">
-							<td class="col1"><input type="radio" name="pay" />货到付款</td>
-							<td class="col2">送货上门后再收款，支持现金、POS机刷卡、支票支付</td>
+							<td class="col1">
+                                <input type="radio" name="pay" checked="" value="<?=$payment_id?>"/><?=$payment['name']?>
+                            </td>
+							<td class="col2"><?=$payment['detail']?></td>
 						</tr>
-						<tr>
-							<td class="col1"><input type="radio" name="pay" />在线支付</td>
-							<td class="col2">即时到帐，支持绝大数银行借记卡及部分银行信用卡</td>
-						</tr>
-						<tr>
-							<td class="col1"><input type="radio" name="pay" />上门自提</td>
-							<td class="col2">自提时付款，支持现金、POS刷卡、支票支付</td>
-						</tr>
-						<tr>
-							<td class="col1"><input type="radio" name="pay" />邮局汇款</td>
-							<td class="col2">通过快钱平台收款 汇款后1-3个工作日到账</td>
-						</tr>
+                        <?php endforeach;?>
+
 					</table>
 
 				</div>
@@ -223,7 +201,7 @@
 									</li>
 									<li>
 										<span>运费：</span>
-										<em>￥10.00</em>
+										<em>￥<?=\frontend\models\Order::$deliveries[2]['price']?></em>
 									</li>
 									<li>
 										<span>应付总额：</span>
@@ -240,7 +218,7 @@
 		</div>
 
 		<div class="fillin_ft">
-			<a href=""><span>提交订单</span></a>
+			<a href="javascript:" id="submit-btn"><span >提交订单</span></a>
 			<p>应付总额：<strong>￥5076.00元</strong></p>
 			
 		</div>

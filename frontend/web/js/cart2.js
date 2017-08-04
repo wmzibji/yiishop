@@ -19,7 +19,6 @@ $(function(){
 		$("form[name=address_form]").hide();
 		$(this).parent().addClass("cur").siblings().removeClass("cur");
 	});
-
 	//送货方式修改
 	$("#delivery_modify").click(function(){
 		$(this).hide();
@@ -56,4 +55,47 @@ $(function(){
 	$(".personal").click(function(){
 		$(".company_input").attr("disabled","disabled");
 	});
+
+//默认选中第一个
+	$('p input:first').attr('checked','checked');
+	//选择时赋予checked，清除其他的
+	$("input[name='address']").click(function () {
+		$('.address input').removeAttr('checked');
+		$(this).attr('checked','checked');
+	});
+//默认选中第一个
+	$('.delivery_select input:first').attr('checked','checked');
+//选择时赋予checked，清除其他的
+	$("input[name='delivery']").click(function () {
+		$('.delivery_select input').removeAttr('checked');
+		$(this).attr('checked','checked');
+	});
+//默认选中第一个
+	$('.col1 input:first').attr('checked','checked');
+//选择时赋予checked，清除其他的
+	$("input[name='pay']").click(function () {
+		$('.pay_select input').removeAttr('checked');
+		$(this).attr('checked','checked');
+	});
+
+$("#submit-btn").click(function(){
+    var address_id=$("input[name='address']:checked").val();
+    var delivery_id=$("input[name='delivery']:checked").val();
+    var payment_id=$("input[name='pay']:checked").val();
+    $.post(
+        'order',
+        {delivery_id:delivery_id,payment_id:payment_id, address_id:address_id},
+        function (data) {
+            console.log(data);
+            console.log(address_id);
+            console.log(delivery_id);
+            console.log(payment_id);
+            if(data == 'success'){
+                window.location.href="/member/order1";
+            }else {
+                alert('订单失败');
+            }
+        }
+    );
+});
 });
