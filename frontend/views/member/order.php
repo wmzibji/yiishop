@@ -192,20 +192,17 @@
 							<td colspan="5">
 								<ul>
 									<li>
-										<span> 共 <?=$num?> 件商品，总商品金额：</span>￥
+										<span> 共 <?=$num?> 件商品，总商品金额：￥</span>
 										<em><?=$prices?></em>
 									</li>
+
 									<li>
-										<span>返现：</span>
-										<em>-￥240.00</em>
+										<span>运费：￥</span>
+										<em><?=\frontend\models\Order::$deliveries[2]['price']?></em>
 									</li>
 									<li>
-										<span>运费：</span>
-										<em>￥<?=\frontend\models\Order::$deliveries[2]['price']?></em>
-									</li>
-									<li>
-										<span>应付总额：</span>
-										<em>￥5076.00</em>
+										<span>总金额：￥</span>
+										<em><?=$prices+\frontend\models\Order::$deliveries[2]['price']?></em>
 									</li>
 								</ul>
 							</td>
@@ -219,7 +216,7 @@
 
 		<div class="fillin_ft">
 			<a href="javascript:" id="submit-btn"><span >提交订单</span></a>
-			<p>应付总额：<strong>￥5076.00元</strong></p>
+			<p>应付总额：<strong>￥<?=$prices+\frontend\models\Order::$deliveries[2]['price']?></strong></p>
 			
 		</div>
 	</div>

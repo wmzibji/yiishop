@@ -83,6 +83,7 @@ $("#submit-btn").click(function(){
     var delivery_id=$("input[name='delivery']:checked").val();
     var payment_id=$("input[name='pay']:checked").val();
     $.post(
+        // 'ajax-order',
         'order',
         {delivery_id:delivery_id,payment_id:payment_id, address_id:address_id},
         function (data) {
@@ -93,7 +94,7 @@ $("#submit-btn").click(function(){
             if(data == 'success'){
                 window.location.href="/member/order1";
             }else {
-                alert('订单失败');
+                alert('订单提交失败');
             }
         }
     );
