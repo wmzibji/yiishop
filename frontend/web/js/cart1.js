@@ -68,10 +68,10 @@ $(function(){
     //默认总金额
     var total = 0;
     $(".col5 span").each(function(){
-        $(this).text(Number($(this).text()).toFixed(2));
-        total += parseFloat($(this).text());
+        var a=(parseFloat($(this).text()).toFixed(2));
+        total += parseFloat(a).toFixed(2);
     });
-    $("#total").text(Number(total).toFixed(2));
+    $("#total").text(parseFloat(total).toFixed(2));
 });
 var changeNum = function(goods_id,amount){
     $.post('ajax-cart',{goods_id:goods_id,amount:amount},function(data){

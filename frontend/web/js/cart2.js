@@ -56,28 +56,41 @@ $(function(){
 		$(".company_input").attr("disabled","disabled");
 	});
 
-//默认选中第一个
+//默认选中第一个-------收货地址--------
 	$('p input:first').attr('checked','checked');
 	//选择时赋予checked，清除其他的
 	$("input[name='address']").click(function () {
 		$('.address input').removeAttr('checked');
 		$(this).attr('checked','checked');
 	});
-//默认选中第一个
+//默认选中第一个 ---邮寄-------------
 	$('.delivery_select input:first').attr('checked','checked');
-//选择时赋予checked，清除其他的
+//选择时赋予checked，清除其他的 ------邮寄
 	$("input[name='delivery']").click(function () {
 		$('.delivery_select input').removeAttr('checked');
 		$(this).attr('checked','checked');
+        //----------根据选中的tr---找他的第二个td子节点-----,显示邮寄的钱
+        var delivery_price = $("input[name='delivery']:checked").closest('tr').find(':eq(2)').find('span').text();
+        $('#delivery_price').text(parseFloat(delivery_price).toFixed(2));//邮寄费
+        var goods_prices= $("#goods_prices").text();//商品金额
+        $('#prices').text((parseFloat(delivery_price)+parseFloat(goods_prices)).toFixed(2));//商品金额+邮寄费
+        $('#pricess').text('￥'+(parseFloat(delivery_price)+parseFloat(goods_prices)).toFixed(2));//商品金额+邮寄费
 	});
-//默认选中第一个
+    var delivery_price = $("input[name='delivery']:checked").closest('tr').find(':eq(2)').find('span').text();
+    $('#delivery_price').text(parseFloat(delivery_price).toFixed(2));//邮寄费
+    var goods_prices= $("#goods_prices").text();//商品金额
+    $('#prices').text((parseFloat(delivery_price)+parseFloat(goods_prices)).toFixed(2));//商品金额+邮寄费
+    $('#pricess').text('￥'+(parseFloat(delivery_price)+parseFloat(goods_prices)).toFixed(2));//商品金额+邮寄费
+	//----------/-邮寄--------------
+//默认选中第一个---付款方式-----------
 	$('.col1 input:first').attr('checked','checked');
 //选择时赋予checked，清除其他的
 	$("input[name='pay']").click(function () {
 		$('.pay_select input').removeAttr('checked');
 		$(this).attr('checked','checked');
 	});
-
+    //---------------/-付款方式-----------
+	//------提交表单--------
 $("#submit-btn").click(function(){
     var address_id=$("input[name='address']:checked").val();
     var delivery_id=$("input[name='delivery']:checked").val();

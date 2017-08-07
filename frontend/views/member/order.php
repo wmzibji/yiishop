@@ -101,7 +101,7 @@
 								<td>
 									<input type="radio" name="delivery" checked="" value="<?=$delivery_id?>"/><?=$delivery['name']?>
 								</td>
-								<td>￥<?=$delivery['price']?></td>
+								<td>￥<span id=""><?=$delivery['price']?></span></td>
 								<td><?=$delivery['detail']?></td>
 							</tr>
                             <?php endforeach;?>
@@ -182,7 +182,7 @@
 							<td class="col1"><a href=""><img src="<?=$good['logo']?>" alt="" /></a>  <strong><a href=""><?=$good['name']?></a></strong></td>
 							<td class="col3">￥<?=$good['shop_price']?></td>
 							<td class="col4"> <?=$good->amount['amount']?></td>
-							<td class="col5">￥<span><?=$good['shop_price']*$good->amount['amount']?></span></td>
+							<td class="col5">￥<span><?=sprintf("%.2f",$good['shop_price']*$good->amount['amount'])?></span></td>
 						</tr>
                         <?php endforeach;?>
 
@@ -193,16 +193,16 @@
 								<ul>
 									<li>
 										<span> 共 <?=$num?> 件商品，总商品金额：￥</span>
-										<em><?=$prices?></em>
+										<em id="goods_prices"><?=sprintf("%.2f",$prices)?></em>
 									</li>
 
 									<li>
 										<span>运费：￥</span>
-										<em><?=\frontend\models\Order::$deliveries[2]['price']?></em>
+										<em id="delivery_price"></em>
 									</li>
 									<li>
 										<span>总金额：￥</span>
-										<em><?=$prices+\frontend\models\Order::$deliveries[2]['price']?></em>
+										<em  id="prices"><?=$prices?></em>
 									</li>
 								</ul>
 							</td>
@@ -216,7 +216,7 @@
 
 		<div class="fillin_ft">
 			<a href="javascript:" id="submit-btn"><span >提交订单</span></a>
-			<p>应付总额：<strong>￥<?=$prices+\frontend\models\Order::$deliveries[2]['price']?></strong></p>
+			<p>应付总额：<strong  id="pricess">￥<?=$prices?></strong></p>
 			
 		</div>
 	</div>
@@ -249,5 +249,6 @@
 		</p>
 	</div>
 	<!-- 底部版权 end -->
+
 </body>
 </html>

@@ -321,6 +321,7 @@ class MemberController extends Controller
     public function actionOrder(){
         $model = new Order();
         //---开启事务----
+        $delivery_id =\Yii::$app->request->post('delivery_id');//送货方式id
         $transaction = Yii::$app->db->beginTransaction();
         if(\Yii::$app->request->post() && $model->validate()) {
             try {
@@ -397,7 +398,7 @@ class MemberController extends Controller
         //查询数组中商品ID的商品数据
         $goods=Goods::find()->where(['in','id',$goods_ids])->all();
         $address = Address::find()->where(['member_id'=>Yii::$app->user->id])->all();//地址数据
-        //总金额
+        //商品总金额
         $prices=0;
         foreach ($goods as $good ) {
             $prices += $good['shop_price'] * $good->amount['amount'];

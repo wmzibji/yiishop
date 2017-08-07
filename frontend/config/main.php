@@ -11,7 +11,7 @@ return [
     //设置语言
     'language'=>'zh-CN',
     //修改默认路由
-    //'defaultRoute'=>'user/index',
+    'defaultRoute'=>'member/index',
     //修改默认布局文件
     //'layout'=>false,
     'basePath' => dirname(__DIR__),
