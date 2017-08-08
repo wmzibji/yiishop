@@ -23,12 +23,13 @@ class Member extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['rePassword','tel','email'], 'required','on'=>self::SCENARIO_REGISTER],
             ['password','compare','compareAttribute'=>'rePassword','on'=>self::SCENARIO_REGISTER],
-            [['smsCode'], 'required','on'=>self::SCENARIO_REGISTER],
             ['rememberMe','boolean','on'=>self::SCENARIO_LOGIN],
-            [['username','password','code'], 'required'],
-            [['code'], 'captcha','captchaAction'=>'member/captcha'],
+
+            [['username','tel','email'], 'required'],
+            [['username','tel','email'],'unique'],
+            [['code','smsCode','password','rePassword'], 'required','on'=>self::SCENARIO_REGISTER],
+            [['code'], 'captcha','captchaAction'=>'member/captcha','on'=>[self::SCENARIO_REGISTER,self::SCENARIO_LOGIN]],
             [['status', 'created_at', 'updated_at', 'last_login_time', 'last_login_ip'], 'integer'],
             [['username', 'password', 'tel', 'email'], 'string', 'max' => 50],
             [['auth_key'], 'string', 'max' => 32],
